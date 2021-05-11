@@ -15,3 +15,5 @@ Altis has fallen to the OPFOR forces, and it is up to you to take it back. Embar
 * Learn that every window is a threat thanks to the custom urban combat AI,
 * Accomplish meaningful secondary objectives that will benefit your progression,
 * Never lose your progress with the built-in server-side save system.
+
+Original work belongs to team of [GREUH Liberation](https://github.com/GreuhZbug/greuh_liberation.Altis) team.

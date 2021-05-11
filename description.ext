@@ -1,0 +1,50 @@
+respawn = 3;
+respawndelay = 5;
+disabledAI = true;
+
+enableDebugConsole = 1;
+allowFunctionsLog = 1;
+
+minPlayerDistance = 50;
+corpseManagerMode = 1;
+corpseLimit = 30;
+corpseRemovalMinTime = 180;
+corpseRemovalMaxTime = 1200;
+
+wreckManagerMode = 0;
+wreckLimit = 15;
+wreckRemovalMinTime = 180;
+wreckRemovalMaxTime = 1800;
+
+loadScreen="res\liberation.jpg";
+onLoadMission = $STR_MISSION_TITLE;
+author = "[GREUH] Zbug, [GREUH] McKeewa, [PCLF] Operator";
+onLoadName = $STR_MISSION_TITLE;
+cba_settings_hasSettingsFile = 1;
+
+joinUnassigned = 0;
+
+class Header
+{
+	gameType = CTI;
+	minPlayers = 1;
+	maxPlayers = 41;
+};
+
+
+#include "GREUH\UI\GREUH_interface.hpp"
+#include "ui\liberation_interface.hpp"
+#include "ui\liberation_notifications.hpp"
+#include "ui\mission_params.hpp"
+
+
+class CfgDebriefing
+{
+	class End1
+	{
+		title =	$STR_SORRY;
+		subtitle = "";
+		description = $STR_COMMANDER_NOT_AUTHORIZED;
+		pictureBackground = "";
+	};
+};

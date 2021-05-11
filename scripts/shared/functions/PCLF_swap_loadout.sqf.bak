@@ -1,0 +1,132 @@
+// Spaw loadout of freshly spawned OPFOR unit.
+// params: unit which loadout is swapped, unit's role for picking new loadout, index for checking uptier probability
+params ["_unit", "_role", "_idx", "_squadLoadoutHash"];
+private ["_cfg", "_uptier_probability", "_wpnProps", "_wpn", "_optics", "_devices", "_mags", "_vest", "_headgear", "_uniform", "_vestCamo", "_grenade", "_secondary", "_secMag"];
+
+if (!local _unit) exitWith {};
+
+//Remove existing items
+removeAllWeapons _unit;
+removeAllItems _unit;
+removeAllAssignedItems _unit;
+removeUniform _unit;
+removeVest _unit;
+removeBackpack _unit;
+removeHeadgear _unit;
+removeGoggles _unit;
+
+
+_secondary = [];
+_cfg = GRLIB_arsenal_opfor_low;
+_uptier_probability = ((combat_readiness / 100) ^ _idx) * 100;
+if (combat_readiness >= GRLIB_uptier_readiness || _uptier_probability >= random 100 ) then {
+    _cfg = GRLIB_arsenal_opfor_hi;
+};
+
+_wpnProps = _role select 1;
+_wpn = _squadLoadoutHash getOrDefault [_wpnProps select 0, []];
+if (count _wpn == 0) then {
+    _wpn = [_wpnProps select 0, _cfg get "weapons", false] call PCLF_getPrimaryWeapon;
+};
+_mag = [_wpn select 1, _wpn select 3, _cfg get "mags", false] call PCLF_getMagazine;
+_grenade = selectRandom (_cfg get "grenadesfrag");
+
+if (_wpnProps select 2 != "None" && _wpn select 2 != "None") then {
+    _optics = [_wpnProps select 2, _wpn select 2, _wpn select 3, _cfg get "optics", true, false] call PCLF_getOptics;
+};
+
+if ((_wpnProps select 3) || (_wpnProps select 4)) then {
+    _devices = [_wpn select 3, _cfg get "devices", true] call PCLF_getDevices;
+};
+
+_vest = _squadLoadoutHash getOrDefault [_role select 4, []];
+if (count _vest == 0) then {
+    _vestCamo = _wpn select 3;
+    if (_vestCamo == "nocamo") then { _vestCamo = "any" };
+    _vest = [_role select 4, _vestCamo, _cfg get "vests", false] call PCLF_getVest;
+};
+
+_headgear = _squadLoadoutHash getOrDefault ["headgear", []];
+if (count _headgear == 0) then {
+    _headgear = ["headgear", _vestCamo, _cfg get "vests", false] call PCLF_getVest;
+};
+_uniform = _squadLoadoutHash getOrDefault ["uniform", []];
+if (count _uniform == 0) then {
+    _uniform = [_vestCamo, _cfg get "uniforms", false] call PCLF_getUniform;
+};
+
+_unit forceAddUniform _uniform;
+_unit addVest (_vest select 0);
+_unit addHeadgear (_headgear select 0);
+
+_unit addWeapon (_wpn select 0);
+_unit addPrimaryWeaponItem _mag;
+
+if ("tl" in (_role select 6)) then {
+    _grenade = selectRandom (_cfg get "grenadesmoke");
+};
+
+if ("gl" in (_role select 6)) then {
+    _grenade = selectRandom (GRLIB_common_items get "gp25_he");
+    if (!(_unit addPrimaryWeaponItem _grenade)) then {
+        _grenade = selectRandom (GRLIB_common_items get "m203_he");
+        _unit addPrimaryWeaponItem _grenade;
+    };
+};
+
+if ("lat" in (_role select 6)) then {
+    _secondary = ["at", _cfg get "weapons", false] call PCLF_getPrimaryWeapon;
+};
+
+if ("lat" in (_role select 6)) then {
+    _secondary = ["at", _cfg get "weapons", false] call PCLF_getPrimaryWeapon;
+};
+
+if ("aa" in (_role select 6)) then {
+    _secondary = ["aa", _cfg get "weapons", false] call PCLF_getPrimaryWeapon;
+};
+
+if (count _secondary > 0) then {
+    _unit addWeapon _secondary select 0;
+    if ((_secondary select 1) != "None") then {
+        _secMag = [_secondary select 1, _secondary select 3, _cfg get "mags", false] call PCLF_getMagazine;
+        _unit addSecondaryWeaponItem _secMag;
+        if (_role select 5) then {_unit addItemToBackpack _secMag };
+    };
+};
+
+if ((_wpnProps select 3) && (_wpn select 4)) then { _unit addPrimaryWeaponItem (_devices select 0) }; // muzzle device
+if ((_wpnProps select 4) && (_wpn select 5)) then { _unit addPrimaryWeaponItem (_devices select 1) }; // rail device
+
+for "_i" from 1 to (_wpnProps select 1) do { _unit addItemToVest _mag };
+
+if (_role select 5) then {
+    for "_i" from 1 to (_role select 2) do { _unit addItemToBackpack _grenade };
+} else {
+    for "_i" from 1 to (_role select 2) do { _unit addItemToVest _grenade };
+};
+
+if (GRLIB_ace) then {
+    private _d = selectRandom (GRLIB_common_items get "acemeddressing");
+    for "_i" from 1 to 5 do { _unit addItemToUniform  _d };
+    if ("medic" in (_role select 6)) then {
+        for "_i" from 1 to 10 do { _unit addItemToBackpack  _d };
+        for "_i" from 1 to 5 do { _unit addItemToBackpack  selectRandom (GRLIB_common_items get "acemedinjector") };
+        for "_i" from 1 to 5 do { _unit addItemToBackpack  selectRandom (GRLIB_common_items get "acemedicine") };
+    };
+} else {
+    _unit addItemToUniform selectRandom (GRLIB_common_items get "medicinefak");
+    if ("medic" in (_role select 6)) then { _unit addItemToBackpack selectRandom (GRLIB_common_items get "medicinepak") };
+};
+
+_unit linkItem "ItemMap";
+_unit linkItem "ItemCompass";
+_unit linkItem "ItemWatch";
+_unit linkItem "ItemRadio";
+
+_squadLoadoutHash set [_wpnProps select 0, _wpn];
+_squadLoadoutHash set [_role select 5, _vest];
+_squadLoadoutHash set ["uniform", _uniform];
+_squadLoadoutHash set ["headgear", _headgear];
+
+// _squadLoadoutHash

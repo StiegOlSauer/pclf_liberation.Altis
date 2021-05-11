@@ -1,0 +1,50 @@
+params ["_opticsType", "_mount", "_camo", "_side", "_deleteItem"];
+
+/*
+ * Optics:
+ * Type (holo, sniper, combat) 1:N Mount (Dovetail, RIS, etc) 1:N Camoflage (nocamo, desert, etc) 1:N Optic pieces
+ *
+*/
+private _optics = "";
+private _config = GRLIB_arsenal_blufor get "optics";
+
+if (_side == GRLIB_side_enemy) then {
+    _config = GRLIB_arsenal_opfor_low get "optics";
+};
+
+if (_mount == "None") exitWith { _optics };
+private _opticsOfTypeX =  _config get _opticsType;
+
+if (not (_camo in GRLIB_eligible_weapon_camo)) then {
+    _camo = selectRandom GRLIB_eligible_weapon_camo;
+};
+
+if (_mount == "any") exitWith {
+    {
+        private _values = _y;
+        {
+            if (count _optics > 0) exitWith {_optics};
+            _optics = [_y, _deleteItem, false] call PCLF_fnc_searchAndDelete;
+
+        } forEach _values;
+    } forEach _config;
+    _optics
+};
+
+private _opticsOfMountX = _opticsOfTypeX get _mount;
+private _opticsOfColorX = _opticsOfMountX get _camo;
+if (count _opticsOfColorX > 0) then {
+    _optics = selectRandom _opticsOfColorX;
+    if (_deleteItem) then {
+        _opticsOfColorX deleteAt (_opticsOfColorX find _optics);
+        _opticsOfTypeX set [_camo, _opticsOfColorX];
+        _config = [_opticsType, _opticsOfTypeX];
+    };
+} else {
+    {
+        if (count _optics > 0) exitWith {_optics};
+        _optics = [_y, _deleteItem, false] call PCLF_fnc_searchAndDelete;
+    } forEach _opticsOfMountX;
+};
+
+_optics

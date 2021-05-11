@@ -1,0 +1,23 @@
+_unit = _this select 0;
+
+removeAllWeapons _unit;
+removeAllItems _unit;
+removeAllAssignedItems _unit;
+removeVest _unit;
+removeBackpack _unit;
+removeHeadgear _unit;
+removeGoggles _unit;
+_unit addVest "V_I_G_resistanceLeader_F";
+_unit addItemToVest "FirstAidKit";
+for "_i" from 1 to 2 do {_unit addItemToVest "MiniGrenade";};
+_unit addItemToVest "SmokeShell";
+for "_i" from 1 to 2 do {_unit addItemToVest "rhs_mag_9x18_8_57N181S";};
+_unit addBackpack "B_TacticalPack_oli";
+_unit addItemToVest "rhs_100Rnd_762x54mmR_green";
+for "_i" from 1 to 4 do {_unit addItemToBackpack "rhs_100Rnd_762x54mmR_green";};
+_unit addHeadgear "H_Watchcap_khk";
+_unit addGoggles "G_Balaclava_lowprofile";
+_unit addWeapon "rhs_weap_pkm";
+_unit addWeapon "rhs_weap_makarov_pm";
+_unit linkItem "ItemMap";
+_unit linkItem "ItemCompass";
