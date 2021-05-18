@@ -1,6 +1,6 @@
 disableSerialization;
 
-private [ "_overlayshown", "_sectorcontrols", "_active_sectors_hint", "_uiticks", "_attacked_string", "_active_sectors_string", "_color_readiness", "_nearest_active_sector", "_zone_size", "_colorzone", "_bar", "_barwidth", "_first_iteration" ];
+private ["_overlayshown", "_sectorcontrols", "_active_sectors_hint", "_uiticks", "_attacked_string", "_active_sectors_string", "_color_readiness", "_nearest_active_sector", "_zone_size", "_colorzone", "_bar", "_barwidth", "_first_iteration", "_fobdistance"];
 
 _overlayshown = false;
 _sectorcontrols = [201,202,203,244,205];
@@ -17,30 +17,31 @@ if ( isNil "cinematic_camera_started" ) then { cinematic_camera_started = false 
 if ( isNil "halojumping" ) then { halojumping = false };
 
 while { true } do {
+    private _nearfob = [] call F_getNearestFob;
+    _fobdistance = [10000, (player distance _nearfob)] select (count _nearfob == 3);
 
 	if ( isNull ((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (101)) && _overlayshown ) then {
 		_overlayshown = false;
 		_first_iteration = true;
 
 	};
-	if ( alive player && !dialog && !_overlayshown && !cinematic_camera_started && !halojumping ) then {
+	if (alive player && !dialog && !_overlayshown && !cinematic_camera_started && !halojumping) then {
 		cutRsc["statusoverlay", "PLAIN", 1];
 		_overlayshown = true;
 		_first_iteration = true;
 		_uiticks = 0;
 	};
-	if ( ( !alive player || dialog || cinematic_camera_started ) && _overlayshown) then {
+
+	if (( !alive player || dialog || cinematic_camera_started || (_fobdistance > 100 && (player distance lhd) > 200)) && _overlayshown) then {
 		cutRsc["blank", "PLAIN", 0];
 		_overlayshown = false;
 		_first_iteration = true;
 	};
 	if ( _overlayshown ) then {
-
 		((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (266)) ctrlSetText format [ "%1", GRLIB_ui_notif ];
 		((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (267)) ctrlSetText format [ "%1", GRLIB_ui_notif ];
 
 		if ((getmarkerpos "opfor_capture_marker") distance markers_reset > 100 ) then {
-
 			private [ "_attacked_string" ];
 			_attacked_string = [ markerpos "opfor_capture_marker" ] call F_getLocationName;
 
@@ -54,8 +55,7 @@ while { true } do {
 		};
 
 
-		if ( _uiticks % 5 == 0 ) then {
-
+		if ( _uiticks % 2 == 0 ) then {
 			((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (101)) ctrlSetText format [ "%1/%2", (floor resources_infantry),infantry_cap ];
 			((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (102)) ctrlSetText format [ "%1", (floor resources_ammo) ];
 			((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (103)) ctrlSetText format [ "%1/%2", (floor resources_fuel),fuel_cap ];
@@ -71,13 +71,10 @@ while { true } do {
 
 			((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (105)) ctrlSetTextColor _color_readiness;
 			((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (135)) ctrlSetTextColor _color_readiness;
-
 		};
 
-		if ( _uiticks % 25 == 0 ) then {
-
+		if ( _uiticks % 10 == 0 ) then {
 			if (!isNil "active_sectors" && ( [] call F_opforCap >= GRLIB_sector_cap)) then {
-
 				((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (517)) ctrlShow true;
 
 				if ( !_active_sectors_hint ) then {
@@ -86,12 +83,11 @@ while { true } do {
 				};
 
 				_active_sectors_string = "<t align='right' color='#e0e000'>" + (localize "STR_ACTIVE_SECTORS") + "<br/>";
-				{
+				active_sectors apply {
 					_active_sectors_string = _active_sectors_string + (markertext _x) + "<br/>";
-				} foreach active_sectors;
+				};
 				_active_sectors_string = _active_sectors_string + "</t>";
 				((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (516)) ctrlSetStructuredText parseText _active_sectors_string;
-
 			} else {
 				((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (516)) ctrlSetStructuredText parseText " ";
 				((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (517)) ctrlShow false;
@@ -139,5 +135,5 @@ while { true } do {
 	};
 	_uiticks = _uiticks + 1;
 	if ( _uiticks > 1000 ) then { _uiticks = 0 };
-	uiSleep 0.25;
+	uiSleep 1;
 };
