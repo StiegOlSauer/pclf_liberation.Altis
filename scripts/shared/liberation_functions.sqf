@@ -62,3 +62,4 @@ PCLF_spawnBuildingSquad = compileFinal preprocessFileLineNumbers "scripts\shared
 PCLF_taskDefend = compileFinal preprocessFileLineNumbers "scripts\shared\functions\PCLF_adaptedCBATaskDefend.sqf";
 PCLF_spawnMilitaryPostSquad = compileFinal preprocessFileLineNumbers "scripts\shared\functions\PCLF_spawnMilitaryPostSquad.sqf";
 PCLF_spawnRegularSquad = compileFinal preprocessFileLineNumbers "scripts\shared\functions\PCLF_spawnRegularSquad.sqf";
+PCLF_getOpforVehicle = compileFinal preprocessFileLineNumbers "scripts\shared\functions\PCLF_getOpforVehicle.sqf";

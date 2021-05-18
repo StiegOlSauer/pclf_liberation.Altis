@@ -67,6 +67,9 @@ _explosives = [] call compileFinal preprocessFileLineNumbers format ["scripts\ga
 // Init squad compositions
 _sq = [] call compileFinal preprocessFileLineNumbers format ["scripts\gameplay_templates\arsenal\%1\squads.sqf", _preset_dir];
 
+// Load vehicles
+_vehs = [] call compileFinal preprocessFileLineNumbers format ["scripts\gameplay_templates\arsenal\%1\vehicles.sqf", _preset_dir];
+
 [
-    _weaponsHash, _starting_wpns, _mags, _optics, _uniforms, _vests, _devices, _explosives, _sq
+    _weaponsHash, _starting_wpns, _mags, _optics, _uniforms, _vests, _devices, _explosives, _sq, _vehs
 ]

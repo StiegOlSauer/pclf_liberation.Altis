@@ -104,9 +104,26 @@ GRLIB_blufor_base_soldier_class = (_arsenal select 8) select 0;
 GRLIB_blufor_roles = (_arsenal select 8) select 1;
 GRLIB_blufor_squad_comp = (_arsenal select 8) select 2;
 
-// Choose and process BLUFOR vehicles preset
-// _units = execVM format ["scripts\gameplay_templates\arsenal\%1\main.sqf", _dir];
-//
+// Process BLUFOR vehicles preset
+// Init vehicle progression (i.e. PMC-related unlocks), so we get rid of weights in BLUFOR veh arsenal
+/* There are two variables per vehicle class: "unlocked" and "available" giving 4 possible states:
+ * 1. Unlocked(false), available(false) - veh is not shown in build menu at all
+ * 2. Unlocked(true), available(true) - veh is shown in build menu and available for ordering if there are enough resources
+ * 3. Unlocked(true), available(false) - veh is shown in menu as "upgrade available", which indicates that it is not possible to order a vehicle until upgrade cost is paid
+ * 4. Unlocked(true), available(false) - veh is shown in menu as "locked: conditions are not met", it is not possible to order or upgrade until certain conditions are satisfied
+*/
+private _vehs = createHashMap;
+{
+    for "_i" from 0 to (count _y)-1 step 2 do {
+        private _veh = _y select _i;
+        if (_veh get "unlocked") then {
+            _veh set ["available", true];
+        };
+        _vehs set [(_veh get "type"), _veh];
+    };
+} forEach (_arsenal select 9);
+
+GRLIB_arsenal_blufor set ["vehicles", _vehs];
 
 // Choose OPFOR LOW preset
 _ret = [GRLIB_opfor_preset_low] call compile preprocessFileLineNumbers "scripts\gameplay_templates\arsenal\main.sqf";
@@ -124,6 +141,7 @@ GRLIB_arsenal_opfor_low set ["grenadesother", (_ret select 7) get "grenadeother"
 GRLIB_opfor_low_base_soldier_class = (_ret select 8) select 0;
 GRLIB_opfor_low_roles = (_ret select 8) select 1;
 GRLIB_opfor_low_squad_comp = (_ret select 8) select 2;
+GRLIB_opfor_low_vehicles = _ret select 9;
 
 
 //

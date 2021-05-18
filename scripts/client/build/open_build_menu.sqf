@@ -66,6 +66,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype == 1)} do {
 					_entrytext = localize "STR_FOBTRUCK";
 				};
 				((findDisplay 5501) displayCtrl (110)) lnbAddRow [ _entrytext, format [ "%1" ,_x select 1], format [ "%1" ,_x select 2], format [ "%1" ,_x select 3]];
+                //FIXME
 
 				_icon = getText ( _cfg >> (_x select 0) >> "icon");
 				if(isText  (configFile >> "CfgVehicleIcons" >> _icon)) then {
@@ -81,11 +82,11 @@ while { dialog && alive player && (dobuild == 0 || buildtype == 1)} do {
 				((findDisplay 5501) displayCtrl (110)) lnbAddRow  [_squadname, format [ "%1" ,_x select 1], format [ "%1" ,_x select 2], format [ "%1" ,_x select 3]];
 			};
 
-			_affordable = true;
+			_affordable = true; //FIXME
 			if (((buildtype == 8)&&(unitcap < 10)) || ((buildtype == 1)&&(unitcap == 0))) then {
 				_affordable = false;
 			};
-			
+
 			if(
 				((_x select 1 > 0) && ((_x select 1) > (infantry_cap - resources_infantry))) ||
 				((_x select 2 > 0) && ((_x select 2) > resources_ammo)) ||

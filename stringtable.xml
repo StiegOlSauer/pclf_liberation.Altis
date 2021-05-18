@@ -2,10 +2,10 @@
 <Project name="Liberation">
 		<Package name="Liberation">
 				<Key ID="STR_MISSION_TITLE">
-						<Original>Liberation 0.924</Original>
+						<Original>PCLF Liberation 0.95.1</Original>
 				</Key>
 				<Key ID="STR_MISSION_VERSION">
-						<Original>v0.924</Original>
+						<Original>v0.95.1</Original>
 				</Key>
 				<Key ID="STR_MISSION_DESCRIPTION">
 						<Original>With the power of Freedom and Democracy you shall liberate Altis from the OPFOR oppression.</Original>

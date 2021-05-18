@@ -31,14 +31,15 @@ if ( (!(_sector in blufor_sectors)) &&  ( ( [ getmarkerpos _sector , [ _opforcou
     _loadoutHash = [] call PCLF_prepareSectorArmory;
 
 	if (_sector in sectors_bigtown) then {
-		_vehtospawn = [([] call F_getAdaptiveVehicle), ([] call F_getAdaptiveMilVehicle), ([] call F_getAdaptiveMilVehicle)];
+// 		_vehtospawn = [([] call F_getAdaptiveVehicle), ([] call F_getAdaptiveMilVehicle), ([] call F_getAdaptiveMilVehicle)];
+        _vehtospawn = ["tank", "atgm", "support", "ifv"];
         _squadCount = 2;
 		if ( GRLIB_unitcap >= 1) then {
             _squadCount = 1 + (ceil (GRLIB_unitcap * 2));
 		};
-		if((random 100) > (66 / GRLIB_difficulty_modifier)) then { _vehtospawn pushback ([] call F_getAdaptiveMilVehicle); };
-		if((random 100) > (50 / GRLIB_difficulty_modifier)) then { _vehtospawn pushback ([] call F_getAdaptiveMilVehicle); };
-		if((random 100) > (33 / GRLIB_difficulty_modifier)) then { _vehtospawn pushback ( [] call F_getAdaptiveVehicle ); };
+		if((random 100) > (66 / GRLIB_difficulty_modifier)) then {_vehtospawn pushback "apc"};
+		if((random 100) > (50 / GRLIB_difficulty_modifier)) then {_vehtospawn pushback "aa"};
+		if((random 100) > (33 / GRLIB_difficulty_modifier)) then {_vehtospawn pushback "tank"};
 		_spawncivs = true;
 
 		_building_ai_max = round (50 * _popfactor) ;
@@ -50,8 +51,8 @@ if ( (!(_sector in blufor_sectors)) &&  ( ( [ getmarkerpos _sector , [ _opforcou
 	if (_sector in sectors_capture) then {
 		_vehtospawn = [];
         _squadCount = ceil GRLIB_unitcap;
-		if((random 100) > (66 / GRLIB_difficulty_modifier)) then {_vehtospawn pushback ([] call F_getAdaptiveMilVehicle);};
-		if((random 100) > (33 / GRLIB_difficulty_modifier)) then {_vehtospawn pushback ([] call F_getAdaptiveMilVehicle);};
+		if((random 100) > (66 / GRLIB_difficulty_modifier)) then {_vehtospawn pushback "support"};
+		if((random 100) > (33 / GRLIB_difficulty_modifier)) then {_vehtospawn pushback "transport"};
 		_spawncivs = true;
 		_building_ai_max = round ((floor (18 + (round (combat_readiness / 10 )))) * _popfactor);
 		_building_range = 70;
@@ -64,11 +65,11 @@ if ( (!(_sector in blufor_sectors)) &&  ( ( [ getmarkerpos _sector , [ _opforcou
 		if ( GRLIB_unitcap >= 1) then {
             _squadCount = 1 + (ceil (GRLIB_unitcap * 2));
 		};
-		_vehtospawn = [( [] call F_getAdaptiveVehicle ),( [] call F_getAdaptiveVehicle )];
+		_vehtospawn = ["ifv", "apc"];
 		if((random 100) > (66 / GRLIB_difficulty_modifier)) then {
-		_vehtospawn pushback ( [] call F_getAdaptiveVehicle );
+            _vehtospawn pushback "support";
 		};
-		if((random 100) > (40 / GRLIB_difficulty_modifier)) then { _vehtospawn pushback ( [] call F_getAdaptiveVehicle ); };
+		if((random 100) > (40 / GRLIB_difficulty_modifier)) then {_vehtospawn pushback "tank"};
 		_spawncivs = false;
 		_building_ai_max = round ((floor (18 + (round (combat_readiness / 4 )))) * _popfactor);
 		_building_range = 110;
@@ -80,8 +81,8 @@ if ( (!(_sector in blufor_sectors)) &&  ( ( [ getmarkerpos _sector , [ _opforcou
 		if ( GRLIB_unitcap >= 1.25) then {
 			_squadCount = _squadCount + 1;
 		};
-		if((random 100) > 66) then { _vehtospawn pushback ( [] call F_getAdaptiveVehicle ); };
-		if((random 100) > 33) then { _vehtospawn pushback ([] call F_getAdaptiveMilVehicle);};
+		if((random 100) > 66) then { _vehtospawn pushback "ifv"};
+		if((random 100) > 33) then { _vehtospawn pushback "ifv"};
 		_spawncivs = false;
 		_building_ai_max = round ((floor (18 + (round (combat_readiness / 10 )))) * _popfactor);
 		_building_range = 100;
@@ -95,7 +96,7 @@ if ( (!(_sector in blufor_sectors)) &&  ( ( [ getmarkerpos _sector , [ _opforcou
 			_squadCount = _squadCount + 1;
 		};
 		_building_ai_max = 0;
-		if((random 100) > 95) then { _vehtospawn pushback ( [] call F_getAdaptiveVehicle ); };
+		if((random 100) > 95) then { _vehtospawn pushback "apc"; };
 	};
 
 	if ( _building_ai_max > 0 && GRLIB_adaptive_opfor ) then {
@@ -103,10 +104,11 @@ if ( (!(_sector in blufor_sectors)) &&  ( ( [ getmarkerpos _sector , [ _opforcou
 	};
 
 	{
-		_vehicle = [_sectorpos, _x, _loadoutHash] call F_libSpawnVehicle;
+        private _veh_props = [_x] call PCLF_getOpforVehicle;
+        _vehicle = [_sectorpos, _veh_props, _loadoutHash] call F_libSpawnVehicle;
 		[group ((crew _vehicle) select 0 ),_sectorpos] spawn add_defense_waypoints;
 		_managed_units pushback _vehicle;
-		{_managed_units pushback _x} foreach (crew _vehicle);
+		(crew _vehicle) apply {_managed_units pushback _x};
 		sleep 0.25;
 	} foreach _vehtospawn;
 

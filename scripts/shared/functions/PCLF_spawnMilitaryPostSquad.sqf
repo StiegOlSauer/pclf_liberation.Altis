@@ -11,7 +11,7 @@ private _mil_buildings = ["Land_Cargo_Patrol_V1_F","Land_Cargo_Patrol_V2_F","Lan
 ((nearestObjects [_sectorpos, _mil_buildings, GRLIB_capture_size]) select {alive _x}) apply {
     _military_defenders_posts = _military_defenders_posts + count (_x buildingPos -1);
 };
-if (_military_defenders_posts == 0) exitWith {};
+if (_military_defenders_posts == 0) exitWith {[]};
 
 private _grp = createGroup GRLIB_side_enemy;
 private _groups = [_grp];

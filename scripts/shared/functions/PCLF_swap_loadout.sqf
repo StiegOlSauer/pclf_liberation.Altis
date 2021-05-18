@@ -23,7 +23,7 @@ _arsenal = GRLIB_arsenal_opfor_low;
 _uptier_probability = ((combat_readiness / 100) ^ _idx) * 100;
 if (combat_readiness >= GRLIB_uptier_readiness || _uptier_probability >= random 100 ) then {
     _cfg = _squadLoadoutHash get "high";
-    _arsenal = GRLIB_arsenal_opfor_low;
+    _arsenal = GRLIB_arsenal_opfor_low; //FIXME: use high-tier arsenal when ready
 };
 
 _wpnProps = _role select 1;
@@ -35,16 +35,16 @@ if ((_wpnProps select 3) or (_wpnProps select 4)) then {
     _devices = [_wpn select 3, _arsenal get "devices", true] call PCLF_getDevices;
 };
 
-_vest = _cfg get (_role select 4);
+_vest = _cfg get (_role select 3);
 _headgear = _cfg get "headgear";
 _uniform = _cfg get "uniform";
 
 _unit forceAddUniform _uniform;
-if (not ("crew" in (_role select 6))) then {
+if (not ("crew" in (_role select 5))) then {
     _unit addVest (_vest select 0);
-    _unit addHeadgear (_headgear select 0);
 };
 
+_unit addHeadgear (_headgear select 0);
 _unit addWeapon (_wpn select 0);
 _unit addPrimaryWeaponItem _mag;
 
@@ -53,15 +53,15 @@ if (_wpnProps select 2 != "None" && _wpn select 2 != "None") then {
     _unit addPrimaryWeaponItem _optics;
 };
 
-if (_role select 5) then {
+if (_role select 4) then {
     _unit addBackpack (selectRandom (GRLIB_common_items get "backpack"));
 };
 
-if ("tl" in (_role select 6)) then {
+if ("tl" in (_role select 5)) then {
     _grenade = selectRandom (_arsenal get "grenadesmoke");
 };
 
-if ("gl" in (_role select 6)) then {
+if ("gl" in (_role select 5)) then {
     _grenade = selectRandom (GRLIB_common_items get "gp25_he");
     if (!(_unit addPrimaryWeaponItem _grenade)) then {
         _grenade = selectRandom (GRLIB_common_items get "m203_he");
@@ -69,15 +69,15 @@ if ("gl" in (_role select 6)) then {
     };
 };
 
-if ("lat" in (_role select 6)) then {
+if ("lat" in (_role select 5)) then {
     _secondary = _cfg get "lat";
 };
 
-if ("hat" in (_role select 6)) then {
+if ("hat" in (_role select 5)) then {
     _secondary = _cfg get "hat";
 };
 
-if ("aa" in (_role select 6)) then {
+if ("aa" in (_role select 5)) then {
     _secondary = _cfg get "aa";
 };
 
@@ -87,7 +87,7 @@ if (count _secondary > 0) then {
     if ((_secondary select 1) != "None") then {
         _secMag = [_secondary select 1, _secondary select 3, _arsenal get "mags", false] call PCLF_getMagazine;
         _unit addSecondaryWeaponItem _secMag;
-        if (_role select 5) then {_unit addItemToBackpack _secMag };
+        if (_role select 4) then {_unit addItemToBackpack _secMag };
     };
 };
 
@@ -96,7 +96,7 @@ if ((_wpnProps select 4) && (_wpn select 5)) then { _unit addPrimaryWeaponItem (
 
 for "_i" from 1 to (_wpnProps select 1) do { _unit addItemToVest _mag };
 
-if (_role select 5) then {
+if (_role select 4) then {
     for "_i" from 1 to (_role select 2) do { _unit addItemToBackpack _grenade };
 } else {
     for "_i" from 1 to (_role select 2) do { _unit addItemToVest _grenade };
@@ -105,14 +105,14 @@ if (_role select 5) then {
 if (GRLIB_ace) then {
     private _d = selectRandom (GRLIB_common_items get "acemeddressing");
     for "_i" from 1 to 5 do { _unit addItemToUniform  _d };
-    if ("medic" in (_role select 6)) then {
+    if ("medic" in (_role select 5)) then {
         for "_i" from 1 to 10 do { _unit addItemToBackpack  _d };
         for "_i" from 1 to 5 do { _unit addItemToBackpack  selectRandom (GRLIB_common_items get "acemedinjector") };
         for "_i" from 1 to 5 do { _unit addItemToBackpack  selectRandom (GRLIB_common_items get "acemedicine") };
     };
 } else {
     _unit addItemToUniform selectRandom (GRLIB_common_items get "medicinefak");
-    if ("medic" in (_role select 6)) then { _unit addItemToBackpack selectRandom (GRLIB_common_items get "medicinepak") };
+    if ("medic" in (_role select 5)) then { _unit addItemToBackpack selectRandom (GRLIB_common_items get "medicinepak") };
 };
 
 _unit linkItem "ItemMap";

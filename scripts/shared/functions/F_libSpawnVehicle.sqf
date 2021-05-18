@@ -1,13 +1,11 @@
 params [
 	"_sectorpos",
-	"_classname",
-    "_loadoutHash",
+	"_vehicle_props",
+    "_loadout_hash",
 	["_precise_position", false],
 	["_disable_abandon", false],
 	["_random_rotate", true]
 ];
-
-diag_log format [ "Spawning vehicle %1 at %2", _classname , time ];
 
 private _newvehicle = objNull;
 private _spawnpos = zeropos;
@@ -20,6 +18,8 @@ if ( _precise_position ) then {
 		if ( count _spawnpos == 0 ) then { _spawnpos = zeropos; };
 	};
 };
+private _classname = _vehicle_props select 0;
+private _camo = _vehicle_props select 1;
 
 _newvehicle = objNull;
 if ( _classname in opfor_choppers ) then {
@@ -29,6 +29,10 @@ if ( _classname in opfor_choppers ) then {
 	_newvehicle = _classname createVehicle _spawnpos;
 	_newvehicle setpos _spawnpos;
 };
+
+if ((count _camo) > 0 || _camo != "any") then {
+    [_newvehicle, [_camo, 1], false] call BIS_fnc_initVehicle;
+};
 _newvehicle allowdamage false;
 
 clearWeaponCargoGlobal _newvehicle;
@@ -36,7 +40,7 @@ clearMagazineCargoGlobal _newvehicle;
 clearItemCargoGlobal _newvehicle;
 clearBackpackCargoGlobal _newvehicle;
 
-[_newvehicle, _loadoutHash] call F_libSpawnOpforCrew;
+[_newvehicle, _loadout_hash] call F_libSpawnOpforCrew;
 sleep 0.1;
 { _x addMPEventHandler ['MPKilled', {_this spawn kill_manager}]; } foreach (crew _newvehicle);
 
@@ -54,7 +58,4 @@ if ( !_disable_abandon ) then {
 	[ _newvehicle ] spawn csat_abandon_vehicle;
 };
 
-diag_log format [ "Done Spawning vehicle %1 at %2", _classname , time ];
-
 _newvehicle
-
