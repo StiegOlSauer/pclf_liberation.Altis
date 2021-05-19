@@ -44,13 +44,13 @@ GRLIB_arsenal_starting_weapons = [];
 GRLIB_arsenal_opfor_low = createHashMap;
 GRLIB_arsenal_opfor_hi = createHashMap;
 
-GRLIB_arsenal_wpn_unlocks_per_box = 3;
+GRLIB_arsenal_wpn_unlocks_per_box = floor (10 / (2 * GRLIB_difficulty_modifier));
+if (GRLIB_arsenal_wpn_unlocks_per_box < 3) then {GRLIB_arsenal_wpn_unlocks_per_box = 3};
 GRLIB_arsenal_vest_unlocks_per_box = 2;
 
 
 // Choose and process appropriate BLUFOR weapons preset
 _arsenal = [GRLIB_blufor_preset] call compile preprocessFileLineNumbers "scripts\gameplay_templates\arsenal\main.sqf";
-// _commonItems = call compile preprocessFileLineNumbers "scripts\gameplay_templates\arsenal\common_items.sqf";
 GRLIB_common_items = call compile preprocessFileLineNumbers "scripts\gameplay_templates\arsenal\common_items.sqf";
 
 GRLIB_arsenal_blufor set ["weapons", _arsenal select 0];

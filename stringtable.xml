@@ -450,6 +450,13 @@
 						<Russian>Утилизировать</Russian>
 
 				</Key>
+                <Key ID="STR_COLLECTING_PROCEED">
+						<Original>Collect</Original>
+						<French>Collect</French>
+						<German>Sammeln</German>
+						<Spanish>Collect</Spanish>
+						<Russian>Реквизировать</Russian>
+				</Key>
 				<Key ID="STR_RECYCLING_CANCEL">
 						<Original>Cancel</Original>
 						<French>Annuler</French>

@@ -17,11 +17,6 @@ getDevOfTypeXAndColorY = {
 
 private _muzzle = "";
 private _rail = "";
-// private _config = GRLIB_arsenal_blufor get "devices";
-//
-// if (_side == GRLIB_side_enemy) then {
-//     _config = GRLIB_arsenal_opfor_low get "devices";
-// };
 
 if (not (_camo in GRLIB_eligible_weapon_camo)) then {
     _camo = selectRandom GRLIB_eligible_weapon_camo;

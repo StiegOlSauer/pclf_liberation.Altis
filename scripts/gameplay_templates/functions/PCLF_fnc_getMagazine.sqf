@@ -30,11 +30,6 @@ if (_magType == "None") exitWith {""};
 
 private _mag = "";
 private _magTypes = _config get "types";
-// private _config = GRLIB_arsenal_blufor get "mags";
-//
-// if (_side == GRLIB_side_enemy) then {
-//     _config = GRLIB_arsenal_opfor_low get "mags";
-// };
 
 if (not (_wpnColor in GRLIB_eligible_weapon_camo)) then {
     _wpnColor = selectRandom GRLIB_eligible_weapon_camo;

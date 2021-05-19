@@ -6,31 +6,10 @@ params ["_vestType", "_camo", "_config", "_evict"];
  *
 */
 private _vest = "";
-// private _config = GRLIB_arsenal_blufor get "vests";
-//
-// if (_side == GRLIB_side_enemy) then {
-//     _config = GRLIB_arsenal_opfor_low get "vests";
-// };
 
 if (_camo == "any") then {
     _camo = selectRandom GRLIB_eligible_weapon_camo;
 };
-
-// private _vestsOfTypeX = _config get _vestType;
-// private _vestsOfColorX = _vestsOfTypeX get _camo;
-// if (count _vestsOfColorX > 0) then {
-//     _vest = selectRandomWeighted _vestsOfColorX;
-//     if (_evict) then {
-//         _vestsOfColorX deleteAt (_vestsOfColorX find _vest);
-//         _vestsOfTypeX set [_camo, _vestsOfColorX];
-//         _config set [_vestType, _vestsOfTypeX];
-//     };
-// } else {
-//     {
-//         if (count _vest > 0) exitWith {_vest};
-//         _vest = [_y, _evict, true] call PCLF_fnc_searchAndDelete;
-//     } forEach _vestsOfTypeX;
-// };
 
 scopeName "main";
 {

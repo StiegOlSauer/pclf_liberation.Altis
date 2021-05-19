@@ -32,12 +32,16 @@ while { true } do {
 		_uiticks = 0;
 	};
 
-	if (( !alive player || dialog || cinematic_camera_started || (_fobdistance > 100 && (player distance lhd) > 200)) && _overlayshown) then {
+	if ((!alive player || dialog || cinematic_camera_started) && _overlayshown) then {
 		cutRsc["blank", "PLAIN", 0];
 		_overlayshown = false;
 		_first_iteration = true;
 	};
+
 	if ( _overlayshown ) then {
+        [1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,101,102,103,104,105,106,135,1012] apply {
+            ((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (_x)) ctrlShow (not (_fobdistance > 100 && (player distance lhd) > 200 && _overlayshown));
+        };
 		((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (266)) ctrlSetText format [ "%1", GRLIB_ui_notif ];
 		((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (267)) ctrlSetText format [ "%1", GRLIB_ui_notif ];
 
@@ -133,7 +137,7 @@ while { true } do {
 		};
 
 	};
-	_uiticks = _uiticks + 1;
-	if ( _uiticks > 1000 ) then { _uiticks = 0 };
+	_uiticks = [_uiticks + 1, 0] select (_uiticks > 10000);
+// 	if ( _uiticks > 10000 ) then { _uiticks = 0 };
 	uiSleep 1;
 };
