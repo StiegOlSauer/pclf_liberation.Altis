@@ -1,4 +1,5 @@
 if (!isServer) exitWith {};
+if (true) exitWith {diag_log "Sector tasks are temporarily disabled"};
 //define task type according to matrix
 //put corresponding task content - name and description in a variables
 //perhaps, I need separate function for this
@@ -57,5 +58,5 @@ switch _taskType do {
 	case 6: {[_taskTypeArray] spawn task_foodorder};
 	case 7: {[_taskTypeArray] spawn task_escape};
 	case 8: {[_taskTypeArray] spawn task_revenge};
-	case 9: {[_taskTypeArray] spawn task_fuelwars};	
+	case 9: {[_taskTypeArray] spawn task_fuelwars};
 };

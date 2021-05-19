@@ -22,21 +22,8 @@ if (not (_vestType in ["normal", "heavy"])) then {
 
 _vest = [_vestType, _camo, GRLIB_arsenal_blufor get "vests", true] call PCLF_getVest;
 
-// if no vest is found by provided parameters, try any camo pattern
-// if (count _vest == 0) then {
-//     _vest = [_vestType, "any", GRLIB_arsenal_blufor get "vests", true] call PCLF_getVest;
-// };
-//
-// if still nothing, then no vests of chosen type are left, try different vest type
-// if (count _vest == 0) then {
-//     _vest = [ ["normal", "heavy"] - [_vestType], "any", GRLIB_arsenal_blufor get "vests", true] call PCLF_getVest;
-// };
 _camo = _vest select 1;
-
 _uniform = [_camo, GRLIB_arsenal_blufor get "uniforms", true] call PCLF_getUniform;
-// if (count _uniform == 0) then {
-//     _uniform = ["any", GRLIB_arsenal_blufor get "uniforms", true] call PCLF_getUniform;
-// };
 
 _headgear = ["headgear", _camo, GRLIB_arsenal_blufor get "vests", true] call PCLF_getVest;
 if (count _headgear == 0) then {

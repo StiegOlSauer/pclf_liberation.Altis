@@ -34,8 +34,6 @@ GRLIB_opfor_preset_high = ["OpforHighAlertFaction", 0] call bis_fnc_getParamValu
 
 
 GRLIB_ace = false;
-GRLIB_items_per_box = floor (10 / GRLIB_difficulty_modifier);
-if ( GRLIB_items_per_box < 4 ) then { GRLIB_items_per_box = 4 };
 if ( GRLIB_introduction == 1 ) then { GRLIB_introduction = true } else { GRLIB_introduction = false };
 if ( GRLIB_deployment_cinematic == 1 ) then { GRLIB_deployment_cinematic = true } else { GRLIB_deployment_cinematic = false };
 if ( GRLIB_build_first_fob == 1 ) then { GRLIB_build_first_fob = true } else { GRLIB_build_first_fob = false };

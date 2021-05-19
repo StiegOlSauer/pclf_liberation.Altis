@@ -1,11 +1,6 @@
 params ["_camo", "_config", "_deleteItem"];
 
 private _uniform = "";
-// private _config = GRLIB_arsenal_blufor get "uniforms";
-//
-// if (_side == GRLIB_side_enemy) then {
-//     _config = GRLIB_arsenal_opfor_low get "uniforms";
-// };
 
 if (not (_camo in GRLIB_eligible_weapon_camo) || _camo == "any") then {
     _camo = selectRandom GRLIB_eligible_weapon_camo;

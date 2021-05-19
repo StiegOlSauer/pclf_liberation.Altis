@@ -38,13 +38,14 @@ if (count _wpnOfClassX > 0) then {
     private _shifted_arr = [_wpnOfClassX, _shift] call _shift_array;
     _wpn = selectRandomWeighted _shifted_arr;
     if (_evict) then {
-        _wpnOfClassX deleteAt (_wpnOfClassX find _wpn);
+        private _idx = _wpnOfClassX find _wpn;
+        _wpnOfClassX deleteRange [_idx, 2];
         _config set [_wpnClass, _wpnOfClassX];
     };
 } else {
     {
         if (count _wpn > 0) exitWith {_wpn};
-        private _shifted_arr = [_x, _shift] call _shift_array;
+        private _shifted_arr = [_y, _shift] call _shift_array;
         _wpn = [_shifted_arr, _evict, true] call PCLF_fnc_searchAndDelete;
     } forEach _config;
 };
