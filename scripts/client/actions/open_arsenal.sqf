@@ -61,7 +61,7 @@ if ( count _loadplayers > 0 ) then {
 };
 
 ((findDisplay 5251) displayCtrl 201) ctrlAddEventHandler [ "mouseButtonDblClick" , { load_loadout = 1; } ];
-((findDisplay 5251) displayCtrl 101) ctrlAddEventHandler [ "mouseButtonClick" , { GRLIB_respawn_loadout = getUnitLoadout player; closeDialog 0; } ];
+((findDisplay 5251) displayCtrl 101) ctrlAddEventHandler [ "mouseButtonClick" , { closeDialog 0; } ];
 waitUntil { !dialog || !(alive player) || load_loadout > 0 || edit_loadout > 0 || load_from_player >= 0 };
 
 if ( load_loadout > 0 ) then {
