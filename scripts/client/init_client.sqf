@@ -74,3 +74,9 @@ player addEventHandler ["TaskSetAsCurrent",{_newTask = "";_tmp1 = format ["%1", 
 [] execVM "onPlayerRespawn.sqf";
 
 [ player ] joinSilent (createGroup GRLIB_side_friendly);
+
+[
+    missionNamespace,
+    "arsenalClosed",
+    {GRLIB_respawn_loadout = getUnitLoadout player}
+] call BIS_fnc_addScriptedEventHandler;

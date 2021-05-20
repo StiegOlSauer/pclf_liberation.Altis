@@ -3,7 +3,7 @@ class liberation_arsenal {
 	movingEnable = false;
 	controlsBackground[] = {};
 
-	controls[] = {"OuterBG", "RecycleBG","OuterBG_F", "InnerBG", "InnerBG_F", "Header","LoadoutList","EditButton","LoadButton", "RespawnButton", "TransferButton", "PlayersCombo", "ButtonClose"};
+	controls[] = {"OuterBG", "RecycleBG","OuterBG_F", "InnerBG", "InnerBG_F", "Header","LoadoutList","EditButton","LoadButton", "TransferButton", "PlayersCombo", "ButtonClose"};
 
 	objects[] = {};
 
@@ -70,16 +70,6 @@ class liberation_arsenal {
 		text = $STR_EDIT_LOADOUT;
 		action = "edit_loadout = 1;";
 	};
-	class RespawnButton : StdButton{
-		idc = -1;
-		x = (0.18 * safezoneW + safezoneX);
-		y = (0.7 * safezoneH + safezoneY);
-		w = (0.14 * safezoneW);
-		h = (0.04 * safezoneH);
-		sizeEx = 0.024 * safezoneH;
-		text = $STR_MAKE_RESPAWN_LOADOUT;
-		action = "respawn_loadout = 1;";
-	};
 	class PlayersCombo : StdCombo{
 		idc = 203;
 		x = (0.18 * safezoneW + safezoneX);
@@ -105,7 +95,6 @@ class liberation_arsenal {
 		h = 0.02 * safezoneH;
 		y = 0.095 * safezoneH + safezoneY;
 		text = "X";
-		action = "closeDialog 0";
 	};
 
 };

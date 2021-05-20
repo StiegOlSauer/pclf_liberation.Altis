@@ -188,7 +188,7 @@ while { dialog && alive player } do {
 
 				_tempgmp = createGroup GRLIB_side_friendly;
 				(typeof _selectedmember) createUnit [ markers_reset, _tempgmp,''];
-				[ (units _tempgmp) select 0, _selectedmember ] call F_swapInventory;
+                _selectedmember setUnitLoadout (getUnitLoadout ((units _tempgmp) select 0));
 				deleteVehicle ((units _tempgmp) select 0);
 				_selectedmember setDamage 0;
 
@@ -210,7 +210,7 @@ while { dialog && alive player } do {
 			closeDialog 0;
 
 			if ( primaryWeapon player == "" && secondaryWeapon player == "" ) then {
-				[ _selectedmember, player ] call F_swapInventory;
+                player setUnitLoadout (getUnitLoadout _selectedmember);
 			};
 
 			_destpos = getposATL _selectedmember;

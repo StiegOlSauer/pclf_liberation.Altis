@@ -2,7 +2,6 @@ private [ "_loadouts_data", "_saved_loadouts", "_counter", "_loadplayers", "_pla
 
 load_loadout = 0;
 edit_loadout = 0;
-respawn_loadout = 0;
 load_from_player = -1;
 createDialog "liberation_arsenal";
 
@@ -62,8 +61,8 @@ if ( count _loadplayers > 0 ) then {
 };
 
 ((findDisplay 5251) displayCtrl 201) ctrlAddEventHandler [ "mouseButtonDblClick" , { load_loadout = 1; } ];
-
-waitUntil { !dialog || !(alive player) || load_loadout > 0 || edit_loadout > 0 || respawn_loadout > 0 || load_from_player >= 0 };
+((findDisplay 5251) displayCtrl 101) ctrlAddEventHandler [ "mouseButtonClick" , { GRLIB_respawn_loadout = getUnitLoadout player; closeDialog 0; } ];
+waitUntil { !dialog || !(alive player) || load_loadout > 0 || edit_loadout > 0 || load_from_player >= 0 };
 
 if ( load_loadout > 0 ) then {
 
@@ -81,16 +80,10 @@ if ( edit_loadout > 0 ) then {
 	[ "Open", false ] spawn BIS_fnc_arsenal;
 };
 
-if ( respawn_loadout > 0 ) then {
-	closeDialog 0;
-	GRLIB_respawn_loadout = [ player, ["repetitive"] ] call F_getLoadout;
-	hint localize "STR_MAKE_RESPAWN_LOADOUT_HINT";
-};
-
 if ( load_from_player >= 0 ) then {
 	_playerselected = ( _loadplayers select load_from_player ) select 1;
 	if ( alive _playerselected ) then {
-		[ player,  [ _playerselected, ["repetitive"] ] call F_getLoadout ] call F_setLoadout;
+        player setUnitLoadout (getUnitLoadout _playerselected);
 		hint format [ localize "STR_LOAD_PLAYER_LOADOUT_HINT", name _playerselected ];
 	};
 	closeDialog 0;
