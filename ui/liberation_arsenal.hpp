@@ -95,7 +95,6 @@ class liberation_arsenal {
 		h = 0.02 * safezoneH;
 		y = 0.095 * safezoneH + safezoneY;
 		text = "X";
-		action = "closeDialog 0";
 	};
 
 };
