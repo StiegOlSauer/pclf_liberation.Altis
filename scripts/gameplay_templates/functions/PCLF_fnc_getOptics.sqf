@@ -1,5 +1,5 @@
 params ["_opticsType", "_mount", "_camo", "_config", "_strict", "_deleteItem"];
-private ["_mountsToCheck", "_typesToCheck"];
+private ["_mountsToCheck", "_typesToCheck", "_chosenType", "_chosenMount", "_chosenCamo"];
 
 /*
  * Optics:
@@ -9,6 +9,7 @@ private ["_mountsToCheck", "_typesToCheck"];
 private _opticsMounts = ["RIS", "Dovetail", "RPG7"];
 private _opticsTypes = ["holo", "combat", "sniper"];
 private _optics = "";
+private _chosenCamo = "";
 
 if (_mount == "None") exitWith { _optics };
 if (_mount == "any") then {
@@ -32,12 +33,15 @@ if (not (_camo in GRLIB_eligible_weapon_camo)) then {
 
 scopeName "main";
 {
+    _chosenType = _x;
     private _opticsOfTypeX = _config getOrDefault [_x, []];
     if (count _opticsOfTypeX == 0) then {continue};
     {
+        _chosenMount = _x;
         private _opticsOfMountX = _opticsOfTypeX getOrDefault [_x, []];
         if (count _opticsOfMountX == 0) then {continue};
         {
+            _chosenCamo = _x;
             private _opticsOfColorX = _opticsOfMountX getOrDefault [_x, []];
             _optics = [_opticsOfColorX, _deleteItem, false] call PCLF_fnc_searchAndDelete;
             if (count _optics > 0) then { breakTo "main" };
@@ -45,4 +49,4 @@ scopeName "main";
     } forEach _mountsToCheck;
 } forEach (_typesToCheck);
 
-_optics
+[_optics, _chosenType, _chosenMount, _chosenCamo]

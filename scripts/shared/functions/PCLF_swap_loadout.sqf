@@ -50,7 +50,7 @@ _unit addPrimaryWeaponItem _mag;
 
 if (_wpnProps select 2 != "None" && _wpn select 2 != "None") then {
     _optics = [_wpnProps select 2, _wpn select 2, _wpn select 3, _arsenal get "optics", true, false] call PCLF_getOptics;
-    _unit addPrimaryWeaponItem _optics;
+    _unit addPrimaryWeaponItem (_optics select 0);
 };
 
 if (_role select 4) then {

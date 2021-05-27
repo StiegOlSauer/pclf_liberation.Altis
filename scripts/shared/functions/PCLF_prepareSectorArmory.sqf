@@ -18,7 +18,7 @@ private _setupTier = {
     _headgear = ["headgear", _camo, _cfg get "vests", false] call PCLF_getVest;
 
     _hash set ["uniform", _uniform];
-    _hash set ["normal", _vestLight];
+    _hash set ["normal", _vestLight ];
     _hash set ["heavy", _vestHvy];
     _hash set ["headgear", _headgear];
 

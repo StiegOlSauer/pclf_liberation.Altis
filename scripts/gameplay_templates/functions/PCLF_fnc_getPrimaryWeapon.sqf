@@ -1,9 +1,11 @@
 // Returns randomly selected weapon of provided class
 // Params:
-//   * _wpnType - string, possible values: rifle, carbine, sniper, smg, pistol, mg, lmg, aa, at
+//   * _wpnClass - string, possible values: rifle, carbine, sniper, smg, pistol, mg, lmg, aa, at
+//   * _config - hash of proper structure used for searching
 //   * _evict - bool, whether remove found weapon or not
 //   * _shift - [Optional] int, select only among weapons _shift points cooler than default
 params ["_wpnClass", "_config", "_evict", ["_shift", 0]];
+private ["_typesToCheck", "_chosenClass"];
 
 private _shift_array = {
     params ["_arr", "_shift"];
@@ -27,27 +29,29 @@ private _shift_array = {
  *
 */
 private _wpn = "";
-private _wpnOfClassX = _config get _wpnClass;
 
 if (_shift > 0 && _evict) then {
     ["'_evict' and '_shift' parameters are mutually exclusive, removing '_evict'"] call BIS_fnc_error;
     _evict = false;
 };
 
-if (count _wpnOfClassX > 0) then {
-    private _shifted_arr = [_wpnOfClassX, _shift] call _shift_array;
-    _wpn = selectRandomWeighted _shifted_arr;
-    if (_evict) then {
-        private _idx = _wpnOfClassX find _wpn;
-        _wpnOfClassX deleteRange [_idx, 2];
-        _config set [_wpnClass, _wpnOfClassX];
+_typesToCheck = [_wpnClass] + ((GRLIB_weapon_classes - [_wpnClass]) call BIS_fnc_arrayShuffle);
+
+scopeName "main";
+_typesToCheck apply {
+    _chosenClass = _x;
+    private _wpnOfClassX = _config getOrDefault [_chosenClass, []];
+    if (count _wpnOfClassX == 0) then { continue };
+
+    if (_shift > 0) then {
+        _wpnOfClassX = [_wpnOfClassX, _shift] call _shift_array;
     };
-} else {
-    {
-        if (count _wpn > 0) exitWith {_wpn};
-        private _shifted_arr = [_y, _shift] call _shift_array;
-        _wpn = [_shifted_arr, _evict, true] call PCLF_fnc_searchAndDelete;
-    } forEach _config;
+    _wpn = [_wpnOfClassX, _evict, true] call PCLF_fnc_searchAndDelete;
+    if (count _wpn > 0) then {
+        _config set [_chosenClass, _wpnOfClassX];
+        _wpn pushBack _chosenClass;
+        breakTo "main";
+    };
 };
 
 _wpn
