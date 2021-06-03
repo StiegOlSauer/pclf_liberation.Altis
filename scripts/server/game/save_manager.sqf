@@ -50,7 +50,6 @@ ai_groups = [];
 saved_intel_res = 0;
 GRLIB_player_scores = [];
 saved_unitcap = 0;
-saved_arsenal = [];
 
 no_kill_handler_classnames = [FOB_typename, huron_typename];
 _classnames_to_save = [FOB_typename, huron_typename];
@@ -146,11 +145,14 @@ if ( !isNil "greuh_liberation_savegame" ) then {
 	if ( count greuh_liberation_savegame > 16 ) then {
 		saved_unitcap = greuh_liberation_savegame select 16;
 	};
-// 	if ( count greuh_liberation_savegame > 17 ) then {
-// 		GRLIB_whitelisted_from_arsenal = greuh_liberation_savegame select 17;
-// 	};
+	if ( count greuh_liberation_savegame > 17 ) then { // unlocks
+        GRLIB_arsenal_unlocks = greuh_liberation_savegame select 17;
+	};
+    if ( count greuh_liberation_savegame > 18 ) then { // magazines
+        [missionNamespace, (greuh_liberation_savegame select 18), true] call BIS_fnc_addVirtualMagazineCargo;
+	};
 
-	setDate [ 2045, 6, 6, time_of_day, 0];
+	setDate [ 2021, 5, 20, time_of_day, 0];
 
 	_correct_fobs = [];
 	{
@@ -250,8 +252,10 @@ if ( count GRLIB_vehicle_to_military_base_links == 0 ) then {
 		};
 	} foreach _classnames_to_check;
 };
-publicVariable "GRLIB_vehicle_to_military_base_links";
 
+resources_ammo = saved_ammo_res;
+resources_intel = saved_intel_res;
+publicVariable "GRLIB_vehicle_to_military_base_links";
 publicVariable "GRLIB_permissions";
 
 uiSleep 1;
@@ -387,7 +391,7 @@ while { true } do {
 		_stats pushback stats_readiness_earned;
 
 		greuh_liberation_savegame = [ blufor_sectors, GRLIB_all_fobs, buildings_to_save, time_of_day, round combat_readiness,0,0,0, round resources_ammo, _stats,
-		[ round infantry_weight, round armor_weight, round air_weight ], GRLIB_vehicle_to_military_base_links, GRLIB_permissions, ai_groups, resources_intel, GRLIB_player_scores, unitcap ];//, GRLIB_whitelisted_from_arsenal ];
+		[ round infantry_weight, round armor_weight, round air_weight ], GRLIB_vehicle_to_military_base_links, GRLIB_permissions, ai_groups, resources_intel, GRLIB_player_scores, unitcap, GRLIB_arsenal_unlocks, (missionNamespace call BIS_fnc_getVirtualMagazineCargo) ];
 
 		profileNamespace setVariable [ GRLIB_save_key, greuh_liberation_savegame ];
 		saveProfileNamespace;

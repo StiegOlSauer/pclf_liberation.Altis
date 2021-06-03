@@ -4,7 +4,7 @@
 // GRLIB_allowed_weapons = [_shufflingArray, 5000] call KK_fnc_arrayShufflePlus;
 // publicVariable "GRLIB_allowed_weapons";
 //publicVariable "GRLIB_whitelisted_from_arsenal";
-private ["_ret", "_vests", "_commonItems", "_ACEItems"];
+private ["_arsenal", "_ret", "_commonItems", "_ACEItems"];
 
 PCLF_fnc_searchAndDelete = {
     params ["_arr", "_deleteItem", "_weighted"];
@@ -34,6 +34,8 @@ PCLF_getPrimaryWeapon = compileFinal preprocessFileLineNumbers "scripts\gameplay
 PCLF_getDevices = compileFinal preprocessFileLineNumbers "scripts\gameplay_templates\functions\PCLF_fnc_getDevices.sqf";
 PCLF_unlockWeapon = compileFinal preprocessFileLineNumbers "scripts\gameplay_templates\functions\PCLF_fnc_unlockWeapon.sqf";
 PCLF_unlockVest = compileFinal preprocessFileLineNumbers "scripts\gameplay_templates\functions\PCLF_fnc_unlockVest.sqf";
+PCLF_unlockEquipment = compileFinal preprocessFileLineNumbers "scripts\gameplay_templates\functions\PCLF_fnc_unlockEquipment.sqf";
+PCLF_unlocksToArsenal = compileFinal preprocessFileLineNumbers "scripts\gameplay_templates\functions\PCLF_fnc_unlocksToArsenal.sqf";
 
 GRLIB_weapon_classes = ["aa", "lat", "hat", "rifle", "riflegl", "carbine", "carbinegl", "lmg", "mg", "pistol", "smg", "marksman", "sniper"];
 
@@ -51,7 +53,11 @@ GRLIB_arsenal_vest_unlocks_per_box = 2;
 
 // Choose and process appropriate BLUFOR weapons preset
 _arsenal = [GRLIB_blufor_preset] call compile preprocessFileLineNumbers "scripts\gameplay_templates\arsenal\main.sqf";
+_ACEItems = call compile preprocessFileLineNumbers "scripts\gameplay_templates\arsenal\ace_items.sqf";
 GRLIB_common_items = call compile preprocessFileLineNumbers "scripts\gameplay_templates\arsenal\common_items.sqf";
+if (GRLIB_ace) then {
+    GRLIB_common_items merge _ACEItems;
+};
 
 GRLIB_arsenal_blufor set ["weapons", _arsenal select 0];
 GRLIB_arsenal_starting_weapons = _arsenal select 1;
@@ -65,35 +71,48 @@ GRLIB_arsenal_blufor set ["grenadesfrag", (_arsenal select 7) get "grenadefrag"]
 GRLIB_arsenal_blufor set ["grenadesmoke", (_arsenal select 7) get "grenadesmoke"];
 GRLIB_arsenal_blufor set ["grenadesother", (_arsenal select 7) get "grenadeother"];
 
-
-{["", _x, "any"] call PCLF_unlockWeapon} forEach GRLIB_arsenal_starting_weapons;
-
-for "_i" from 0 to GRLIB_arsenal_vest_unlocks_per_box do {
-    ["any", "any"] call PCLF_unlockVest;
+waitUntil { !isNil "save_is_loaded" };
+if (!isNil "GRLIB_arsenal_unlocks") then {
+    [] call PCLF_unlocksToArsenal;
+} else {
+    GRLIB_arsenal_unlocks = createHashMapFromArray [
+        ["weapons", createHashMap],
+        ["vests", createHashMapFromArray [
+            ["normal", createHashMap], ["heavy", createHashMap], ["headgear", createHashMap]
+        ]],
+        ["uniforms", createHashMap],
+        ["optics", createHashMapFromArray [
+            ["holo", createHashMap],
+            ["combat", createHashMap],
+            ["sniper", createHashMap]
+        ]],
+        ["devices", createHashMapFromArray [["nocamo", []], ["black", []], ["desert", []], ["woodland", []]]]
+    ];
 };
 
-[ missionNamespace, (GRLIB_arsenal_blufor get "grenadesfrag"), true ] call BIS_fnc_addVirtualMagazineCargo;
-[ missionNamespace, (GRLIB_arsenal_blufor get "grenadesmoke"), true ] call BIS_fnc_addVirtualMagazineCargo;
-[ missionNamespace, (GRLIB_arsenal_blufor get "grenadesother"), true ] call BIS_fnc_addVirtualMagazineCargo;
-[ missionNamespace, (GRLIB_arsenal_blufor get "explosives"), true ] call BIS_fnc_addVirtualMagazineCargo;
+if (count (missionNamespace call BIS_fnc_getVirtualWeaponCargo) == 0) then {
+    [2] call PCLF_unlockEquipment;
 
-[ missionNamespace, (GRLIB_common_items get "gp25_he"), true ] call BIS_fnc_addVirtualMagazineCargo;
-[ missionNamespace, (GRLIB_common_items get "gp25_other"), true ] call BIS_fnc_addVirtualMagazineCargo;
-[ missionNamespace, (GRLIB_common_items get "m203_he"), true ] call BIS_fnc_addVirtualMagazineCargo;
-[ missionNamespace, (GRLIB_common_items get "m203_other"), true ] call BIS_fnc_addVirtualMagazineCargo;
+    [missionNamespace, (GRLIB_arsenal_blufor get "grenadesfrag"), true] call BIS_fnc_addVirtualMagazineCargo;
+    [missionNamespace, (GRLIB_arsenal_blufor get "grenadesmoke"), true] call BIS_fnc_addVirtualMagazineCargo;
+    [missionNamespace, (GRLIB_arsenal_blufor get "grenadesother"), true] call BIS_fnc_addVirtualMagazineCargo;
+    [missionNamespace, (GRLIB_arsenal_blufor get "explosives"), true] call BIS_fnc_addVirtualMagazineCargo;
 
-[ missionNamespace, (GRLIB_common_items get "backpack"), true ] call BIS_fnc_addVirtualBackpackCargo;
-[ missionNamespace, (GRLIB_common_items get "binoculars"), true ] call BIS_fnc_addVirtualItemCargo;
-[ missionNamespace, (GRLIB_common_items get "common"), true ] call BIS_fnc_addVirtualItemCargo;
+    [missionNamespace, (GRLIB_common_items get "gp25_he"), true] call BIS_fnc_addVirtualMagazineCargo;
+    [missionNamespace, (GRLIB_common_items get "gp25_other"), true] call BIS_fnc_addVirtualMagazineCargo;
+    [missionNamespace, (GRLIB_common_items get "m203_he"), true] call BIS_fnc_addVirtualMagazineCargo;
+    [missionNamespace, (GRLIB_common_items get "m203_other"), true] call BIS_fnc_addVirtualMagazineCargo;
+};
+
+[missionNamespace, (GRLIB_common_items get "backpack"), true] call BIS_fnc_addVirtualBackpackCargo;
+[missionNamespace, (GRLIB_common_items get "binoculars"), true] call BIS_fnc_addVirtualItemCargo;
+[missionNamespace, (GRLIB_common_items get "common"), true] call BIS_fnc_addVirtualItemCargo;
 
 if (GRLIB_ace) then {
-    _ACEItems = call compile preprocessFileLineNumbers "scripts\gameplay_templates\arsenal\ace_items.sqf";
-//     [missionNamespace, (_ACEItems get "aceitem"), true] call BIS_fnc_addVirtualItemCargo;
-    (keys _ACEItems) apply {
-        [missionNamespace, (_ACEItems get _x), true] call BIS_fnc_addVirtualItemCargo;
-    };
+    {
+        [missionNamespace, _y, true] call BIS_fnc_addVirtualItemCargo;
+    } forEach _ACEItems;
     [missionNamespace, (_ACEItems get "acegrenade"), true] call BIS_fnc_addVirtualMagazineCargo;
-    GRLIB_common_items merge _ACEItems;
 } else {
     [ missionNamespace, (GRLIB_common_items get "medicinefak"), true ] call BIS_fnc_addVirtualItemCargo;
     [ missionNamespace, (GRLIB_common_items get "medicinepak"), true ] call BIS_fnc_addVirtualItemCargo;

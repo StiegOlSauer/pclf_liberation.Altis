@@ -3,9 +3,6 @@ GRLIB_armor_weight = 1;
 GRLIB_air_weight = 1;
 
 [] call compileFinal preprocessFileLineNumbers "scripts\server\init_medical.sqf";
-[] call compileFinal preprocessFileLineNumbers "scripts\server\init_arsenal.sqf";
-// [] call compileFinal preprocessFileLineNumbers "scripts\server\init_opfor_factions.sqf";
-// [] call compileFinal preprocessFileLineNumbers "scripts\loadouts\init_loadouts.sqf";
 
 // AI
 add_civ_waypoints = compileFinal preprocessFileLineNumbers "scripts\server\ai\add_civ_waypoints.sqf";
@@ -81,7 +78,7 @@ wait_to_spawn_sector = compileFinal preprocessFileLineNumbers "scripts\server\se
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\capture_vehicles.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\clean.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\cleanup_vehicles.sqf";
-[] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\fucking_set_fog.sqf";
+// [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\fucking_set_fog.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\manage_time.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\manage_weather.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\periodic_save.sqf";
@@ -103,7 +100,9 @@ wait_to_spawn_sector = compileFinal preprocessFileLineNumbers "scripts\server\se
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\resources\unit_cap.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\sector\lose_sectors.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\sector\manage_sectors.sqf";
-[] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\init_tasks.sqf";
+// [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\init_tasks.sqf";
+
+[] spawn compileFinal preprocessFileLineNumbers "scripts\server\init_arsenal.sqf";
 
 {
 	if ( (_x != player) && (_x distance (getmarkerpos GRLIB_respawn_marker) < 200 ) ) then {

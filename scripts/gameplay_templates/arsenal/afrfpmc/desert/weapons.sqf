@@ -76,15 +76,15 @@ private _rifles = [
     ["CUP_arifle_AKMN_railed_desert", "AK", "RIS", "desert", true, true],     4.938271604938272,
     ["CUP_arifle_AK74M_railed_desert", "AK74", "RIS", "desert", true, true],     2.469135802469136,
     ["arifle_AK12_arid_F", "AK", "RIS", "desert", true, true],     0.7054673721340388,
-    ["CUP_arifle_DSA_SA58_OSW_VFG_Desert", "FAL", "RIS", "desert", true, true],     0.41152263374485604,
-    ["CUP_arifle_Sa58RIS2_gl_desert", "SA58", "RIS", "desert", true, false],     7.407407407407408
+    ["CUP_arifle_DSA_SA58_OSW_VFG_Desert", "FAL", "RIS", "desert", true, true],     0.41152263374485604
 ];
 _weapons_hash set ["rifle", _rifles];
 
 private _riflegls = [
 
     ["CUP_arifle_AK74M_GL_railed_desert", "AK74", "RIS", "desert", true, false],     2.9629629629629632,
-    ["arifle_AK12_GL_arid_F", "AK", "RIS", "desert", true, false],     0.42328042328042326
+    ["arifle_AK12_GL_arid_F", "AK", "RIS", "desert", true, false],     0.42328042328042326,
+    ["CUP_arifle_Sa58RIS2_gl_desert", "SA58", "RIS", "desert", true, false],     2.9629629629629632
 ];
 _weapons_hash set ["riflegl", _riflegls];
 

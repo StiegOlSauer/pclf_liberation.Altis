@@ -61,8 +61,9 @@ private _vests_heavy_desert = [
     ["rhs_6b23_ML_vydra_3m", "desert"],     0.2833333333333334,
     ["CUP_V_PMC_CIRAS_Coyote_Grenadier", "desert"],     0.3457142857142857,
     ["CUP_V_CZ_NPP2006_nk_des", "desert"],     0.13284493284493284,
-    ["CUP_V_RUS_6B45_1_BeigeDigital", "desert"],     0.42100122100122095,
-    ["CUP_V_RUS_6B45_2_BeigeDigital", "desert"],     0.4649572649572649];
+    ["rhs_6b45_desert", "desert"],     1.0371428571428571,
+    ["CUP_V_RUS_6B45_1_BeigeDigital", "desert"],     0.3909297052154195,
+    ["CUP_V_RUS_6B45_2_BeigeDigital", "desert"],     0.4317460317460317];
 
 _vests_heavy set ["desert", _vests_heavy_desert];
 
@@ -88,8 +89,10 @@ private _vests_heavy_woodland = [
     ["rhs_6b13_6sh92_vog", "woodland"],     0.18916666666666665,
     ["CUP_V_PMC_CIRAS_OD_Grenadier", "woodland"],     0.3457142857142857,
     ["CUP_V_CZ_NPP2006_nk_vz95", "woodland"],     0.13284493284493284,
-    ["CUP_V_RUS_6B45_1", "woodland"],     0.42100122100122095,
-    ["CUP_V_RUS_6B45_2", "woodland"],     0.4649572649572649];
+    ["rhs_6b45", "woodland"],     1.0371428571428571,
+    ["rhs_6b45_off", "woodland"],     0.17934065934065932,
+    ["rhs_6b45_rifleman", "woodland"],     0.17934065934065932,
+    ["rhs_6b45_grn", "woodland"],     0.1448739495798319];
 
 _vests_heavy set ["woodland", _vests_heavy_woodland];
 
@@ -102,6 +105,8 @@ private _vests_normal_black = [
 _vests_normal set ["black", _vests_normal_black];
 
 private _vests_normal_desert = [
+    ["CUP_V_RUS_6B45_1_BeigeDigital", "desert"],     0.36486772486772484,
+    ["CUP_V_RUS_6B45_4_BeigeDigital", "desert"],     0.42243386243386244,
     ["rhs_6b23_ML_6sh92_headset", "desert"],     0.2285714285714286,
     ["rhs_6b23_ML_crew", "desert"],     0.2944444444444445,
     ["rhs_6b23_ML_medic", "desert"],     0.23269230769230773,
@@ -115,6 +120,8 @@ _vests_normal set ["desert", _vests_normal_desert];
 
 private _vests_normal_woodland = [
     ["rhs_6b43", "woodland"],     0.9,
+    ["CUP_V_RUS_6B45_1", "woodland"],     0.36486772486772484,
+    ["CUP_V_RUS_6B45_4", "woodland"],     0.42243386243386244,
     ["rhs_6b23_digi_6sh92_headset", "woodland"],     0.2285714285714286,
     ["rhs_6b23_digi_6sh92_headset_spetsnaz", "woodland"],     0.2285714285714286,
     ["rhs_6b23_digi_crew", "woodland"],     0.2944444444444445,

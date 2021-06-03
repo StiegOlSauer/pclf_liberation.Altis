@@ -44,7 +44,6 @@ switch (_preset_id) do {
                 _weaponsHash set [_x, (_weaponsHash getOrDefault [_x, []]) + ((_ret select 0) get _x)];
             } foreach (GRLIB_weapon_classes);
             _starting_wpns = _starting_wpns + (_ret select 1);
-            diag_log _starting_wpns;
         };
         case "nocamo": {
             private _ret = [] call compileFinal preprocessFileLineNumbers format ["scripts\gameplay_templates\arsenal\%1\nocamo\weapons.sqf", _preset_dir];
