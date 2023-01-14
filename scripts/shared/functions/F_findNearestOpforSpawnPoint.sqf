@@ -1,11 +1,5 @@
-//params ["_targetSector", "_minDistance"];
-//private ["_possibleSectors", "_spawnPoint"];
-
-_targetSector = _this select 0;
-_minDistance = _this select 1;
-
-diag_log (format ["_targetSector = %1", _targetSector]);
-diag_log (format ["_minDistance = %1", _minDistance]);
+params ["_targetSector", "_minDistance"];
+private ["_possibleSectors", "_spawnPoint"];
 
 if (_targetSector == "") exitwith {};
 _possibleSectors = [];

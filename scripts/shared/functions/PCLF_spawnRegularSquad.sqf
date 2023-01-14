@@ -1,20 +1,30 @@
-params ["_sector", "_loadoutHash", "_spec_squad"];
-private ["_sectorpos", "_spawnpos", "_grp", "_tier", "_base_class", "_squad_comp"];
+params ["_location", "_remainingLimit", "_loadoutHash", "_isSpec", ["_spawnPosOverride", []], ["_behavior", "SAFE"], ["_combatMode", "GREEN"]];
+private ["_spawnpos", "_grp", "_baseClass", "_squadComp"];
 
-private _ret = ["regular", _spec_squad] call PCLF_getAdaptiveSquadComp;
-_base_class = _ret select 0;
-_squad_comp = _ret select 1;
-_sectorpos = [ getMarkerPos _sector, random 100, random 360 ] call BIS_fnc_relPos;
-_spawnpos = zeropos;
-while { _spawnpos distance zeropos < 1000 } do {
-	_spawnpos = ([ _sectorpos, random 50, random 360 ] call BIS_fnc_relPos) findEmptyPosition [5, 100, "B_Heli_Light_01_F"];
-	if (count _spawnpos == 0) then { _spawnpos = zeropos; };
+private _ret = ["regular", _isSpec] call PCLF_getAdaptiveSquadComp;
+_baseClass = _ret select 0;
+_squadComp = _ret select 1;
+
+if ((count _squadComp) > _remainingLimit) then {
+    _squadComp resize _remainingLimit;
 };
 
+_spawnpos = _spawnPosOverride;
+if (_spawnpos isEqualTo []) then {
+//     _spawnpos = [position _location, 5, 50, 3] call BIS_fnc_findSafePos;
+    _spawnpos = (position _location) findEmptyPosition [0,100];
+};
 _grp = createGroup GRLIB_side_enemy;
 {
-    _base_class createUnit [_spawnpos, _grp,'this addMPEventHandler ["MPKilled", {_this spawn kill_manager}]'];
+    _baseClass createUnit [_spawnpos, _grp,'this addMPEventHandler ["MPKilled", {_this spawn kill_manager}]'];
     [(units _grp) select _forEachIndex, _x, _forEachIndex+1, _loadoutHash] call PCLF_swap_loadout;
-} forEach _squad_comp;
+//     _spawnpos = [_spawnpos, 5, 20, 10, 0, 0, 0] call BIS_fnc_findSafePos;
+    _spawnpos = (position _location) findEmptyPosition [0,100];
+} forEach _squadComp;
+
+_grp setVariable [LP_group_assignment_var, _location];
+_grp setCombatMode _combatMode;
+_grp setCombatBehaviour _behavior;
+(leader _grp) setUnitRank "LIEUTENANT";
 
 _grp

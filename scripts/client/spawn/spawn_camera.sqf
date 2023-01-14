@@ -1,8 +1,8 @@
 private [ "_nearest_sector", "_leadingzero_hour", "_leadingzero_minute", "_startpos0", "_startpos1", "_endpos1", "_startpos2", "_endpos2", "_startpos3", "_endpos3", "_spawn_camera", "_datestring" ];
 params [ "_spawn_str" ];
 
-_nearest_sector = [2000] call F_getNearestSector;
-if ( _nearest_sector != "" ) then { _nearest_sector = format ["%1 %2",localize "STR_SPAWN_NEAR", markertext _nearest_sector]; };
+_nearest_sector = (nearestLocations [position player, ["NameCity", "NameVillage", "NameLocal"], 5000] select {count (text _x) > 0}) # 0;
+if ( ! (isNil "_nearest_sector") ) then { _nearest_sector = format ["%1 %2",localize "STR_SPAWN_NEAR", text _nearest_sector]; };
 _leadingzero_hour = "";
 _leadingzero_minute = "";
 if ( (date select 3) < 10 ) then { _leadingzero_hour = "0" };
@@ -37,7 +37,7 @@ if ( GRLIB_deployment_cinematic ) then {
 
 };
 
-[ format [ "<t size='0.7' align='left'>%1<br/>%2<br/>%3<br/>%4</t>", name player, _spawn_str, _datestring, _nearest_sector ],1,0.8,8,1 ] spawn BIS_fnc_dynamictext;
+[ format [ "<t size='0.7' align='left'>%1<br/>%2<br/>%3<br/>%4</t>", name player, _spawn_str, _datestring, text _nearest_sector ],1,0.8,8,1 ] spawn BIS_fnc_dynamictext;
 
 if ( GRLIB_deployment_cinematic ) then {
 

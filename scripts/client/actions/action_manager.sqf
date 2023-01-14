@@ -26,12 +26,7 @@ waitUntil { one_synchro_done };
 if (((typeOf player) == opfor_commander_classname) || ((typeOf player) == commander_classname)) exitWith {};
 
 while { true } do {
-
-	_nearfob = [] call F_getNearestFob;
-	_fobdistance = 9999;
-	if ( count _nearfob == 3 ) then {
-		_fobdistance = player distance _nearfob;
-	};
+    _fobdistance = player distance ([] call F_getNearestFob);
 
 	_neararsenal = [ ( (getpos player) nearobjects [ Arsenal_typename, _distarsenal ]), { getObjectType _x >= 8 } ] call BIS_fnc_conditionalSelect;
 	_nearfobbox = ( (getpos player) nearEntities [ [ FOB_box_typename, FOB_truck_typename ] , _distbuildfob ] );

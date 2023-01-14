@@ -17,8 +17,7 @@ if ( isNil "cinematic_camera_started" ) then { cinematic_camera_started = false 
 if ( isNil "halojumping" ) then { halojumping = false };
 
 while { true } do {
-    private _nearfob = [] call F_getNearestFob;
-    _fobdistance = [10000, (player distance _nearfob)] select (count _nearfob == 3);
+    private _inFOBArea = (player distance ([] call F_getNearestFob)) < 100;
 
 	if ( isNull ((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (101)) && _overlayshown ) then {
 		_overlayshown = false;
@@ -40,7 +39,7 @@ while { true } do {
 
 	if ( _overlayshown ) then {
         [1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,101,102,103,104,105,106,135,1012] apply {
-            ((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (_x)) ctrlShow (not (_fobdistance > 100 && (player distance lhd) > 200 && _overlayshown));
+            ((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (_x)) ctrlShow ((_inFOBArea || player distance lhd < 200) && _overlayshown);
         };
 		((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (266)) ctrlSetText format [ "%1", GRLIB_ui_notif ];
 		((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (267)) ctrlSetText format [ "%1", GRLIB_ui_notif ];
@@ -78,40 +77,9 @@ while { true } do {
 		};
 
 		if ( _uiticks % 10 == 0 ) then {
-			if (!isNil "active_sectors" && ( [] call F_opforCap >= GRLIB_sector_cap)) then {
-				((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (517)) ctrlShow true;
-
-				if ( !_active_sectors_hint ) then {
-					hint localize "STR_OVERLOAD_HINT";
-					_active_sectors_hint = true;
-				};
-
-				_active_sectors_string = "<t align='right' color='#e0e000'>" + (localize "STR_ACTIVE_SECTORS") + "<br/>";
-				active_sectors apply {
-					_active_sectors_string = _active_sectors_string + (markertext _x) + "<br/>";
-				};
-				_active_sectors_string = _active_sectors_string + "</t>";
-				((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (516)) ctrlSetStructuredText parseText _active_sectors_string;
-			} else {
-				((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (516)) ctrlSetStructuredText parseText " ";
-				((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (517)) ctrlShow false;
-			};
-
-			_nearest_active_sector = [ GRLIB_sector_size ] call F_getNearestSector;
-			if ( _nearest_active_sector != "" ) then {
-				_zone_size = GRLIB_capture_size;
-				if ( _nearest_active_sector in sectors_bigtown ) then {
-					_zone_size = GRLIB_capture_size * 1.4;
-				};
-
-				"zone_capture" setmarkerposlocal (markerpos _nearest_active_sector);
-				_colorzone = "ColorGrey";
-				if ( [ markerpos _nearest_active_sector, _zone_size ] call F_sectorOwnership == GRLIB_side_friendly ) then { _colorzone = GRLIB_color_friendly };
-				if ( [ markerpos _nearest_active_sector, _zone_size ] call F_sectorOwnership == GRLIB_side_enemy ) then { _colorzone = GRLIB_color_enemy };
-				if ( [ markerpos _nearest_active_sector, _zone_size ] call F_sectorOwnership == GRLIB_side_resistance ) then { _colorzone = "ColorCivilian" };
-				"zone_capture" setmarkercolorlocal _colorzone;
-
-				_ratio = [_nearest_active_sector] call F_getForceRatio;
+            _nearest_active_sector = [getPos player] call PCLF_getNearestActiveLocation;
+			if (_nearest_active_sector isEqualType []) then {
+				_ratio = [(_nearest_active_sector select 1)] call F_getForceRatio;
 				_barwidth = 0.084 * safezoneW * _ratio;
 				_bar = (uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (244);
 				_bar ctrlSetPosition [(ctrlPosition _bar) select 0,(ctrlPosition _bar) select 1,_barwidth,(ctrlPosition _bar) select 3];
@@ -121,23 +89,19 @@ while { true } do {
 				} else {
 					_bar ctrlCommit 2;
 				};
-				((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (205)) ctrlSetText (markerText _nearest_active_sector);
+				((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (205)) ctrlSetText (_nearest_active_sector select 0);
 				{ ((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (_x)) ctrlShow true; } foreach  _sectorcontrols;
 				if ( _nearest_active_sector in blufor_sectors ) then {
 					((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (205)) ctrlSetTextColor [0,0.3,1.0,1];
 				} else {
 					((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (205)) ctrlSetTextColor [0.85,0,0,1];
 				};
-
-				"zone_capture" setMarkerSizeLocal [ _zone_size,_zone_size ];
 			} else {
 				{ ((uiNamespace getVariable 'GUI_OVERLAY') displayCtrl (_x)) ctrlShow false; } foreach  _sectorcontrols;
-				"zone_capture" setmarkerposlocal markers_reset;
 			};
 		};
 
 	};
 	_uiticks = [_uiticks + 1, 0] select (_uiticks > 10000);
-// 	if ( _uiticks > 10000 ) then { _uiticks = 0 };
 	uiSleep 1;
 };

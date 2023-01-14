@@ -1,5 +1,5 @@
 // TODO: move this stuff to manage one sector
-params [ "_sector" ];
+params [ "_location" ];
 private [ "_crates_amount", "_spawnpos", "_i", "_spawnclass", "_nearbuildings", "_intel_range", "_building_positions", "_used_positions", "_buildingposition", "_nbintel", "_compatible_classnames" ];
 
 _debug = false;
@@ -26,9 +26,9 @@ _compatible_classnames = [
 
 if ( isNil "GRLIB_military_sectors_already_activated" ) then { GRLIB_military_sectors_already_activated = [] };
 
-if ( !( _sector in GRLIB_military_sectors_already_activated )) then {
+if ( !( (name _location) in GRLIB_military_sectors_already_activated )) then {
 
-	GRLIB_military_sectors_already_activated pushback _sector;
+	GRLIB_military_sectors_already_activated pushback (name _location);
 
 	if ( !GRLIB_passive_income ) then {
 		_crates_amount = ceil (((0.5 * GRLIB_sector_military_value) + (random (0.5 * GRLIB_sector_military_value ))) * GRLIB_resources_multiplier);
@@ -43,7 +43,7 @@ if ( !( _sector in GRLIB_military_sectors_already_activated )) then {
 
 			_spawnpos = zeropos;
 			while { _spawnpos distance zeropos < 1000 } do {
-				_spawnpos =  ( [ ( markerpos _sector), random 50, random 360 ] call BIS_fnc_relPos ) findEmptyPosition [10, 100, 'B_Heli_Transport_01_F'];
+				_spawnpos =  ( [ (locationPosition _location), random 50, random 360 ] call BIS_fnc_relPos ) findEmptyPosition [10, 100, 'B_Heli_Transport_01_F'];
 				if ( count _spawnpos == 0 ) then { _spawnpos = zeropos; };
 			};
 
@@ -65,10 +65,10 @@ if ( !( _sector in GRLIB_military_sectors_already_activated )) then {
 	_spawnclass = ammocrate_o_typename;
 	_spawnpos = zeropos;
 	while { _spawnpos distance zeropos < 1000 } do {
-		_spawnpos =  ( [ ( markerpos _sector), random 50, random 360 ] call BIS_fnc_relPos ) findEmptyPosition [10, 100, 'B_Heli_Transport_01_F'];
+		_spawnpos =  ( [ (locationPosition _location), random 50, random 360 ] call BIS_fnc_relPos ) findEmptyPosition [10, 100, 'B_Heli_Transport_01_F'];
 		if ( count _spawnpos == 0 ) then { _spawnpos = zeropos; };
 	};
-    
+
 	_newbox = _spawnclass createVehicle _spawnpos;
 	_newbox setpos _spawnpos;
 	_newbox setdir (random 360);
@@ -77,8 +77,8 @@ if ( !( _sector in GRLIB_military_sectors_already_activated )) then {
 	clearItemCargoGlobal _newbox;
 	clearBackpackCargoGlobal _newbox;
 	_newbox addMPEventHandler ['MPKilled', {_this spawn kill_manager}];
-	
-	_nearbuildings = [ nearestObjects [ markerpos _sector , _compatible_classnames, _intel_range ], { alive _x } ] call BIS_fnc_conditionalSelect;
+
+	_nearbuildings = nearestObjects [locationPosition _location, _compatible_classnames, _intel_range ] select { alive _x };
 
 	if ( count _nearbuildings > 0 ) then {
 		_building_positions = [];

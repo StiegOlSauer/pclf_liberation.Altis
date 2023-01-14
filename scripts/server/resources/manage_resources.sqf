@@ -1,8 +1,8 @@
 waitUntil { !isNil "save_is_loaded" };
-waitUntil { !isNil "blufor_sectors" };
 waitUntil { !isNil "unitcap" };
 
 if (saved_unitcap > (count allPlayers)) then {unitcap = saved_unitcap} else {unitcap = unitcap_respawns_limit};
+blufor_sectors = [] call LP_getBLUFORLocations;
 
 private _ammo_increase = 0;
 
@@ -14,7 +14,7 @@ while { GRLIB_endgame == 0 } do {
 
 		_blufor_mil_sectors = [];
 		{
-			if ( _x in sectors_military ) then {
+			if (([_x] call LP_getLocationType) in LP_locations_military) then {
 				_blufor_mil_sectors pushback _x;
 				_base_tick_period = 1200;
 			};
@@ -54,7 +54,7 @@ while { GRLIB_endgame == 0 } do {
 					_spawnsector = ( _blufor_mil_sectors call BIS_fnc_selectRandom );
 					_spawnpos = zeropos;
 					while { _spawnpos distance zeropos < 1000 } do {
-						_spawnpos =  ( [ ( markerpos _spawnsector), random 50, random 360 ] call BIS_fnc_relPos ) findEmptyPosition [ 10, 100, 'B_Heli_Transport_01_F' ];
+						_spawnpos =  ( [ ( position _spawnsector), random 50, random 360 ] call BIS_fnc_relPos ) findEmptyPosition [ 10, 100, 'B_Heli_Transport_01_F' ];
 						if ( count _spawnpos == 0 ) then { _spawnpos = zeropos; };
 					};
 

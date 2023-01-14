@@ -49,5 +49,7 @@ blufor_spec_loadout = compile preprocessFileLineNumbers "scripts\loadouts\blufor
 blufor_rfl_loadout = compile preprocessFileLineNumbers "scripts\loadouts\blufor\loadout_rfl.sqf";
 blufor_light_loadout = compile preprocessFileLineNumbers "scripts\loadouts\blufor\loadout_light.sqf";
 
+[] call compileFinal preprocessFileLineNumbers "scripts\compositions\init_compositions.sqf";
+
 [] spawn compileFinal preprocessFileLineNumbers "scripts\shared\diagnostics.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\shared\manage_weather.sqf";

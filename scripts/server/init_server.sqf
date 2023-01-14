@@ -1,6 +1,15 @@
-GRLIB_infantry_weight = 1;
-GRLIB_armor_weight = 1;
-GRLIB_air_weight = 1;
+LP_infantry_weight = 1;
+LP_armor_weight = 1;
+LP_air_weight = 1;
+
+enableDynamicSimulationSystem true;
+
+"Group" setDynamicSimulationDistance 700;
+"Vehicle" setDynamicSimulationDistance 700;
+"EmptyVehicle" setDynamicSimulationDistance 200;
+"Prop" setDynamicSimulationDistance 50;
+
+"IsMoving" setDynamicSimulationDistanceCoef 1.5;
 
 [] call compileFinal preprocessFileLineNumbers "scripts\server\init_medical.sqf";
 
@@ -64,9 +73,8 @@ ied_manager = compileFinal preprocessFileLineNumbers "scripts\server\sector\ied_
 manage_ammoboxes = compileFinal preprocessFileLineNumbers "scripts\server\sector\manage_ammoboxes.sqf";
 manage_one_sector = compileFinal preprocessFileLineNumbers "scripts\server\sector\manage_one_sector.sqf";
 wait_to_spawn_sector = compileFinal preprocessFileLineNumbers "scripts\server\sector\wait_to_spawn_sector.sqf";
-
-//client part of loadouts
-
+activate_location = compileFinal preprocessFileLineNumbers "scripts\server\sector\activate_location.sqf";
+garrison_resolver = compileFinal preprocessFileLineNumbers "scripts\server\sector\garrison_resolver.sqf";
 
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\base\startgame.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\base\huron_manager.sqf";
@@ -84,7 +92,7 @@ wait_to_spawn_sector = compileFinal preprocessFileLineNumbers "scripts\server\se
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\periodic_save.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\playtime.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\save_manager.sqf";
-[] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\spawn_radio_towers.sqf";
+// [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\spawn_radio_towers.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\synchronise_vars.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\zeus_opfor.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\zeus_blufor.sqf";
@@ -99,20 +107,16 @@ wait_to_spawn_sector = compileFinal preprocessFileLineNumbers "scripts\server\se
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\resources\recalculate_timer.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\resources\unit_cap.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\sector\lose_sectors.sqf";
-[] spawn compileFinal preprocessFileLineNumbers "scripts\server\sector\manage_sectors.sqf";
+[] spawn compileFinal preprocessFileLineNumbers "scripts\client\markers\hostile_groups.sqf";
+// [] spawn compileFinal preprocessFileLineNumbers "scripts\server\sector\manage_sectors.sqf";
 // [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\init_tasks.sqf";
 
+[] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\dynamic_sim_manager.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\init_arsenal.sqf";
+[] spawn compileFinal preprocessFileLineNUmbers "scripts\shared\init_locations.sqf";
 
 {
 	if ( (_x != player) && (_x distance (getmarkerpos GRLIB_respawn_marker) < 200 ) ) then {
 		deleteVehicle _x;
 	};
 } foreach allUnits;
-
-GRLIB_tasksAssigned = [];
-GRLIB_tasksRunning = [];
-GRLIB_tasksCompleted = [];
-GRLIB_tasksTOD = [];
-GRLIB_unitToTaskPool = [];
-GRLIB_addUnitTask = [];

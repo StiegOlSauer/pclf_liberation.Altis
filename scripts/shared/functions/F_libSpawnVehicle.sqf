@@ -18,9 +18,8 @@ if ( _precise_position ) then {
 		if ( count _spawnpos == 0 ) then { _spawnpos = zeropos; };
 	};
 };
-private _classname = _vehicle_props select 0;
-private _camo = _vehicle_props select 1;
 
+_vehicle_props params ["_classname", "_camo"];
 _newvehicle = objNull;
 if ( _classname in opfor_choppers ) then {
 	_newvehicle = createVehicle [_classname, _spawnpos, [], 0, 'FLY'];
@@ -42,7 +41,6 @@ clearBackpackCargoGlobal _newvehicle;
 
 [_newvehicle, _loadout_hash] call F_libSpawnOpforCrew;
 sleep 0.1;
-{ _x addMPEventHandler ['MPKilled', {_this spawn kill_manager}]; } foreach (crew _newvehicle);
 
 _newvehicle addMPEventHandler ['MPKilled', {_this spawn kill_manager}];
 if ( _random_rotate ) then {

@@ -1,7 +1,7 @@
 params [["_multiplier", 1]];
 private ["_class", "_optics_type"];
     // Array of probabilities for weapons of different classes
-    private _wpn_probs = [
+private _wpn_probs = [
         0.1,    //aa
         0.3,    //lat
         0.2,    //hat

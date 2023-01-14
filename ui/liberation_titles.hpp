@@ -140,7 +140,7 @@ class RscTitles
       idd = 6666;
       movingEnable = true;
 	  onLoad = "uiNamespace setVariable ['GUI_OVERLAY', _this select 0];";
-      controls[]= { BGPicture,LabelManpower,LabelAmmo,LabelFuel,LabelCap,PictureManpowerShadow,PictureAmmoShadow, BGPictureActiveSectors,
+      controls[]= { BGPicture,LabelManpower,LabelAmmo,LabelFuel,LabelCap,PictureManpowerShadow,PictureAmmoShadow,
 	  PictureFuelShadow,PictureCapShadow,PictureManpower,PictureAmmo,PictureFuel,PictureCap,PictureCombatReadinessShadow,PictureCombatReadiness,
 	  PictureIntelShadow, PictureIntel, LabelIntel,
 	  BGPictureSector,CaptureFrame_OPFOR, CaptureFrame_BLUFOR, CaptureFrame, LabelPoint, LabelCombatReadiness, CentralShadow, CentralLabel, ActiveSectors,
@@ -378,15 +378,6 @@ class RscTitles
 				align = "right";
 				valign = "top";
  		};
- 	class BGPictureActiveSectors : BGPicture {
-	  	idc = 517;
-		x = 0.93 * safezoneW + safezoneX;
-		w = 0.1 * safezoneW;
-		y = 0.8 * safezoneH + safezoneY;
-		h = 0.2 * safezoneH;
-	  };
-
-
 	  class AlertBGPicture : BGPicture {
 	  	idc = 401;
 		x = 0.9 * safezoneW + safezoneX;

@@ -14,7 +14,7 @@ if ( _notiftype == 2 ) then {
 	waitUntil { !isNil "secondary_objective_position_marker" };
 	waitUntil { count secondary_objective_position_marker > 0 };
 	waitUntil { secondary_objective_position_marker distance zeropos > 1000 };
-	[ "lib_intel_fob", [ markertext ( [ 10000, secondary_objective_position_marker ] call F_getNearestSector ) ] ] call BIS_fnc_showNotification;
+	[ "lib_intel_fob", [ name ((nearestLocations [markerPos secondary_objective_position_marker, ["CBA_NamespaceDummy"], 10000] select {count (name _x) > 0}) select 0) ] ] call BIS_fnc_showNotification;
 	_secondary_marker = createMarkerLocal ["secondarymarker", secondary_objective_position_marker];
 	_secondary_marker setMarkerColorLocal GRLIB_color_enemy_bright;
 	_secondary_marker setMarkerTypeLocal "hd_unknown";
@@ -34,7 +34,7 @@ if ( _notiftype == 3 ) then {
 };
 
 if ( _notiftype == 4 ) then {
-	[ "lib_intel_convoy", [ markertext ( [ 10000, _obj_position ] call F_getNearestSector ) ] ] call BIS_fnc_showNotification;
+	[ "lib_intel_convoy", [ name ((nearestLocations [_obj_position, ["CBA_NamespaceDummy"], 10000] select {count (name _x) > 0}) select 0) ] ] call BIS_fnc_showNotification;
 };
 
 if ( _notiftype == 5 ) then {
@@ -45,7 +45,7 @@ if ( _notiftype == 6 ) then {
 	waitUntil { !isNil "secondary_objective_position_marker" };
 	waitUntil { count secondary_objective_position_marker > 0 };
 	waitUntil { secondary_objective_position_marker distance zeropos > 1000 };
-	[ "lib_intel_sar", [ markertext ( [ 10000, secondary_objective_position_marker ] call F_getNearestSector ) ] ] call BIS_fnc_showNotification;
+	[ "lib_intel_sar", [ name ((nearestLocations [secondary_objective_position_marker, ["CBA_NamespaceDummy"], 10000] select {count (name _x) > 0}) select 0) ] ] call BIS_fnc_showNotification;
 	_secondary_marker = createMarkerLocal ["secondarymarker", secondary_objective_position_marker];
 	_secondary_marker setMarkerColorLocal GRLIB_color_enemy_bright;
 	_secondary_marker setMarkerTypeLocal "hd_unknown";

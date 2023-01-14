@@ -363,4 +363,16 @@ private _veh_2 = createHashMapFromArray [
 _transport append [_veh_2, 40];
 _vehicles set ["transport", _transport];
 
+
+private _static = [];
+private _veh_0 = createHashMapFromArray [
+    ["type", "light"], ["class", "LOP_ISTS_Static_DSHKM"],
+    ["family", "transport_veh"], ["name", "DSHKM"],
+    ["cost", 2], ["fuel", 0], ["upgrade_cost", 0],
+    ["woodland", [""]], ["desert", [""]], ["nocamo", [""]],
+    ["unlocked", true]
+];
+_static append [_veh_0, 100];
+_vehicles set ["static", _static];
+
 _vehicles

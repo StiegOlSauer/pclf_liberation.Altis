@@ -1,5 +1,5 @@
 params [ "_targetsector" ];
-private _targetpos = getMarkerPos _targetsector;
+private _targetpos = position _targetsector;
 private _spawnsector = ( [ sectors_airspawn , [ _targetpos ] , { (markerpos _x) distance _input0 }, "ASCEND"] call BIS_fnc_sortBy ) select 0;
 
 private _chopper_type = opfor_choppers call BIS_fnc_selectRandom;

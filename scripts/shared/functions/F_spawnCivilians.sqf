@@ -1,20 +1,20 @@
 diag_log format [ "Spawning civilians at %1", time ];
 
-params [ "_sector" ];
+params ["_location" ];
 private [ "_sectorpos", "_idx", "_nbcivs", "_spread", "_spawnpos", "_grp", "_createdcivs", "_nextciv" ];
 
 _createdcivs = [];
-_sectorpos = getMarkerPos _sector;
+_sectorpos = locationPosition _location;
 
 _idx = 0;
 _nbcivs = round ((3 + (floor (random 7))) * GRLIB_civilian_activity);
 _spread = 1;
-if ( _sector in sectors_bigtown ) then {
+if ([_this] call LP_getLocationType == LP_location_capital) then {
 	_nbcivs = _nbcivs + 10;
 	_spread = 2.5;
 };
 
-_nbcivs = _nbcivs * ( sqrt ( GRLIB_unitcap ) );
+_nbcivs = _nbcivs * (sqrt (GRLIB_unitcap));
 
 while { _idx < _nbcivs } do {
 	_spawnpos = [(((_sectorpos select 0) + (75 * _spread)) - (random (150 * _spread))),(((_sectorpos select 1) + (75 * _spread)) - (random (150 * _spread))),0];

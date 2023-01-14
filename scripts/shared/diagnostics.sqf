@@ -18,6 +18,6 @@ while { true } do {
 	{ side group _x == GRLIB_side_enemy } count allUnits,
 	{ local _x } count allUnits,
 	count vehicles,
-	GRLIB_sector_cap ];
+	LP_unitcap_location ];
 	sleep 60;
 };

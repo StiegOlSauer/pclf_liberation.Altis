@@ -1,7 +1,8 @@
-params [ "_veh" ];
+params ["_veh"];
 
-if ( isNull _veh ) exitWith {};
+if (isNull _veh) exitWith {};
 
-if ( _veh getVariable ["GRLIB_captured", 0] == 0 ) then {
-	deleteVehicle _veh;
+{_veh deleteVehicleCrew _x} forEach (crew _veh);
+if (_veh getVariable ["GRLIB_captured", 0] == 0)  then {
+    deleteVehicle _veh;
 };

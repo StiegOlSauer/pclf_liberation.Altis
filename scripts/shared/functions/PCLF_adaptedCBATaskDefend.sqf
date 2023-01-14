@@ -23,7 +23,8 @@ Examples:
     (end)
 Author:
     Rommel, SilentSpike, [PCLF]StiegOlSauer
-
+Liberation adaptation:
+    StiegOlSauer
 ---------------------------------------------------------------------------- */
 params [
     ["_group", grpNull, [grpNull, objNull]],
@@ -36,6 +37,7 @@ params [
     ["_condition", "true", ["true"]],
     ["_buildings_filter", []]
 ];
+private ["_building"];
 
 // Input validation stuff here
 _group = _group call CBA_fnc_getGroup;
@@ -63,7 +65,7 @@ if (count _condition > 0) then {
 } forEach units _group;
 
 private _statics = _position nearObjects ["StaticWeapon", _radius];
-private _buildings = _position nearObjects ["House", _radius];
+private _buildings = (_position nearObjects ["House", _radius]) select {alive _x};
 private _buildingWeights = [];
 
 // Filter out occupied statics
@@ -89,12 +91,15 @@ _buildings = _buildings select {
     };
 };
 
-
 // If patrolling is enabled then the leader must be free to lead it
 private _units = units _group;
 if (_patrol > 0 && {count _units > 1}) then {
     _units deleteAt (_units find (leader _group));
 };
+
+// Check if there's any building that can handle all units of the group
+private _groupBuilding = nil;
+_groupBuilding = selectRandom (_buildings select {count (_x getVariable "CBA_taskDefend_positions") >= (count _units)});
 
 {
     // 31% chance to occupy nearest free static weapon
@@ -104,7 +109,12 @@ if (_patrol > 0 && {count _units > 1}) then {
     } else {
         // Respect chance to patrol, or force if no building positions left
         if !((_buildings isEqualto []) || { (random 1 < _patrol) }) then {
-            private _building = _buildings selectRandomWeighted _buildingWeights;
+            private _building = ObjNull;
+            if (isNil "_groupBuilding") then {
+                _building = _buildings selectRandomWeighted _buildingWeights;
+            } else {
+                _building = _groupBuilding;
+            };
             private _array = _building getVariable ["CBA_taskDefend_positions", []];
 
             if (_array isNotEqualTo []) then {
@@ -127,20 +137,17 @@ if (_patrol > 0 && {count _units > 1}) then {
 
                     if (_teleport) then {
                         _unit setPos _pos;
+                    } else {
+                        _unit doMove _pos;
+                        waituntil {unitReady _unit};
                     };
-                    _unit doMove _pos;
-                    waituntil {unitReady _unit};
+
+                    doStop _unit;
                     if (random 1 < _hold) then {
                         _unit disableAI "PATH";
                         waitUntil _condition;
                         _unit enableAI "PATH";
-                    } else {
-                        doStop _unit;
                     };
-
-                    // This command causes AI to repeatedly attempt to crouch when engaged
-                    // If ever fixed by BI then consider uncommenting
-                    // _unit setUnitPos "UP";
                 };
             };
         };

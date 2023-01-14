@@ -12,6 +12,7 @@ if ( typeOf player == "VirtualSpectator_F" ) exitWith {
 	[] spawn compileFinal preprocessFileLineNumbers "scripts\client\ui\ui_manager.sqf";
 };
 
+LP_active_markers = [];
 GRLIB_chosenFOB = "";
 GRLIB_client_JIP = true;
 ["Preload"] call BIS_fnc_arsenal;
@@ -36,7 +37,7 @@ if ((typeOf player) == commander_classname) then {
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\markers\empty_vehicles_marker.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\markers\fob_markers.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\markers\group_icons.sqf";
-[] spawn compileFinal preprocessFileLineNumbers "scripts\client\markers\hostile_groups.sqf";
+// [] spawn compileFinal preprocessFileLineNumbers "scripts\client\markers\hostile_groups.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\markers\huron_marker.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\markers\sector_manager.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\markers\spot_timer.sqf";
@@ -57,13 +58,12 @@ if ((typeOf player) == commander_classname) then {
 if ( typeof player == commander_classname ) then {
 	[] spawn compileFinal preprocessFileLineNumbers "scripts\client\misc\delete_groups.sqf";
 	blufor_curator addEventHandler ["CuratorObjectSelectionChanged",{[_this select 1] spawn uav_open_build_menu}];
-	//blufor_curator addEventHandler ["CuratorObjectPlaced",{[_this select 1] spawn remote_call_zeusGearSelect}];F_curatorBluforLoadout
 	blufor_curator addEventHandler ["CuratorObjectPlaced",{[_this select 1] spawn F_curatorBluforLoadout}];
 };
 
 player addMPEventHandler ["MPKilled", {_this spawn kill_manager}];
 
-player addEventHandler ["TaskSetAsCurrent",{_newTask = "";_tmp1 = format ["%1", _this select 1]; _tmp2 = _tmp1 splitString " ";_tmpNewTask = _tmp2 select 1; _tmpUnit = _this select 0; GRLIB_addUnitTask = [_tmpUnit,_tmpNewTask]; publicVariableServer "GRLIB_addUnitTask";}];
+// player addEventHandler ["TaskSetAsCurrent",{_newTask = "";_tmp1 = format ["%1", _this select 1]; _tmp2 = _tmp1 splitString " ";_tmpNewTask = _tmp2 select 1; _tmpUnit = _this select 0; GRLIB_addUnitTask = [_tmpUnit,_tmpNewTask]; publicVariableServer "GRLIB_addUnitTask";}];
 
 {
 	[_x] call BIS_fnc_drawCuratorLocations;

@@ -1,9 +1,9 @@
 params [ [ "_source_position", (getpos player) ] ];
-private [ "_retvalue" ];
+private [ "_fobPos" ];
 
-_retvalue = [];
-if ( count GRLIB_all_fobs > 0 ) then {
-	_retvalue = ( [ GRLIB_all_fobs , [] , { _source_position distance _x } , 'ASCEND' ] call BIS_fnc_sortBy ) select 0;
+_fobPos = position locationNull;
+GRLIB_all_fobs apply {
+    _fobPos = [_fobPos, _x] select ((_source_position distance _fobPos) > (_source_position distance _x));
 };
 
-_retvalue
+_fobPos

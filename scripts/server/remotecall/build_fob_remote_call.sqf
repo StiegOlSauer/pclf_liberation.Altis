@@ -18,37 +18,6 @@ please_recalculate = true;
 trigger_server_save = true;
 
 sleep 3;
-[ [ _new_fob, 0 ] , "remote_call_fob" ] call BIS_fnc_MP;
-
-//do cleanup!
-_count = (count GRLIB_all_fobs) * 5;
-_tmpTasksArray = [];
-_tmpTasksArray = +GRLIB_tasksAssigned;
-
-_taskMarkers = [];
-diag_log format ["FOB REPACKAGE: BEFORE ASSIGNED TASKS: %1",GRLIB_tasksAssigned];
-{
-	_sectorMarkers = [_x] call F_tasks_getNearestMarkers;	
-	{
-		_marker = format ["task_c_%1", _x];
-		if (!(_marker in GRLIB_tasksCompleted)) then {
-			_taskMarkers append [_marker];
-		};
-	} foreach _sectorMarkers;
-} foreach GRLIB_all_fobs;
-//TODO: handle cases when tasks amount is less that FOBs*5 - obviously, do not resize marker to 5, but use returned raw value instead
-_taskMarkers resize _count;
-diag_log format ["FOB REPACKAGE: TASK MARKERS: %1",_taskMarkers];
-GRLIB_tasksAssigned = GRLIB_tasksAssigned + (_taskMarkers - _tmpTasksArray) - (_tmpTasksArray - _taskMarkers);
-
-{
-	if (!(_x in _tmpTasksArray)) then {
-		diag_log format ["FOB REPACKAGE: Starting spawn tasks routine for %1",_x];
-		_nil = [_x] call F_tasks_spawnTask;
-	};
-	sleep 0.1;
-} foreach _taskMarkers;
-
-diag_log format ["FOB REPACKAGE: FINAL GRLIB_tasksAssigned: %1",GRLIB_tasksAssigned];
+[_new_fob, 0] remoteExec ["remote_call_fob"];
 
 stats_fobs_built = stats_fobs_built + 1;

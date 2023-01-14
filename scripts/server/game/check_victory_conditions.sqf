@@ -1,8 +1,8 @@
 sleep 5;
 
-_blufor_bigtowns = [ blufor_sectors, { _x in sectors_bigtown } ] call BIS_fnc_conditionalSelect;
+private _opfor_bigtowns = [position locationNull, GRLIB_side_enemy, [LP_location_capital, LP_location_city]] call LP_getLocations;
 
-if ( count _blufor_bigtowns == count sectors_bigtown ) then {
+if (count _opfor_bigtowns == 0) then {
 	GRLIB_endgame = 1;
 	publicVariable "GRLIB_endgame";
 	{ _x allowDamage false; (vehicle _x) allowDamage false; } foreach allPlayers;

@@ -5,11 +5,14 @@ params [ "_attack_destination" ];
 if ( isNil "GRLIB_last_incoming_notif_time" ) then { GRLIB_last_incoming_notif_time = -9999 };
 
 if ( time > GRLIB_last_incoming_notif_time + 60 ) then {
+    GRLIB_last_incoming_notif_time = time;
 
-	GRLIB_last_incoming_notif_time = time;
-
-	private [ "_attack_location_name" ];
-	_attack_location_name = [ _attack_destination ] call F_getLocationName;
+    private _attack_location_name = [_attack_destination] call F_getFobName;
+    if (not (_attack_location_name == "")) then {
+        _attack_location_name = format ["FOB %1", _attack_location_name];
+    } else {
+        _attack_location_name = text ((nearestLocations [_attack_destination, ["NameCity", "NameVillage", "NameLocal"], 100] select {count (text _x) > 0}) select 0);
+    };
 
 	[ "lib_incoming", [ _attack_location_name ] ] call BIS_fnc_showNotification;
 

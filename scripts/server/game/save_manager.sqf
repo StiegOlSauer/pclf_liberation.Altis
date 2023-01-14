@@ -50,6 +50,7 @@ ai_groups = [];
 saved_intel_res = 0;
 GRLIB_player_scores = [];
 saved_unitcap = 0;
+_LP_locations_saved = createHashMap;
 
 no_kill_handler_classnames = [FOB_typename, huron_typename];
 _classnames_to_save = [FOB_typename, huron_typename];
@@ -151,20 +152,23 @@ if ( !isNil "greuh_liberation_savegame" ) then {
     if ( count greuh_liberation_savegame > 18 ) then { // magazines
         [missionNamespace, (greuh_liberation_savegame select 18), true] call BIS_fnc_addVirtualMagazineCargo;
 	};
+    if ( count greuh_liberation_savegame > 19 ) then { // location variables hash
+        waitUntil { LP_allLocations isNotEqualTo [] };
+        private _locations_saved = (greuh_liberation_savegame select 19);
+        LP_allLocations apply {
+            private _s = _locations_saved get (name _x);
+            if (!isNil "_s") then {
+                private _locationProps = _x getVariable LP_location_props_varname;
+                _locationProps merge [_s, true];
+                _x setVariable [LP_location_props_varname, _locationProps];
+                _x setSide (_locationProps get "side");
+                _x setImportance (_locationProps get "importance");
+                _x setSize [(_locationProps get "size"), (_locationProps get "size")];
+            };
+        };
+	};
 
 	setDate [ 2021, 5, 20, time_of_day, 0];
-
-	_correct_fobs = [];
-	{
-		_next_fob = _x;
-		_keep_fob = true;
-		{
-			if ( _next_fob distance (markerpos _x) < 50 ) exitWith { _keep_fob = false };
-		} foreach sectors_allSectors;
-		if ( _keep_fob ) then { _correct_fobs pushback _next_fob };
-	} foreach GRLIB_all_fobs;
-	GRLIB_all_fobs = _correct_fobs;
-
 	stats_saves_loaded = stats_saves_loaded + 1;
 
 	{
@@ -232,30 +236,8 @@ publicVariable "blufor_sectors";
 publicVariable "GRLIB_all_fobs";
 // publicVariable "GRLIB_whitelisted_from_arsenal";
 
-if ( count GRLIB_vehicle_to_military_base_links == 0 ) then {
-	private [ "_assigned_bases", "_assigned_vehicles", "_nextbase", "_nextvehicle" ];
-	_assigned_bases = [];
-	_assigned_vehicles = [];
-
-	while { count _assigned_bases < count sectors_military && count _assigned_vehicles < count elite_vehicles } do {
-		_nextbase =  ( [ sectors_military, { !(_x in _assigned_bases) } ] call BIS_fnc_conditionalSelect ) call BIS_fnc_selectRandom;
-		_nextvehicle =  ( [ elite_vehicles, { !(_x in _assigned_vehicles) } ] call BIS_fnc_conditionalSelect ) call BIS_fnc_selectRandom;
-		_assigned_bases pushback _nextbase;
-		_assigned_vehicles pushback _nextvehicle;
-		GRLIB_vehicle_to_military_base_links pushback [_nextvehicle, _nextbase];
-	};
-} else {
-	_classnames_to_check = GRLIB_vehicle_to_military_base_links;
-	{
-		if ( ! ( [ _x select 0 ] call F_checkClass ) ) then {
-			GRLIB_vehicle_to_military_base_links = GRLIB_vehicle_to_military_base_links - [_x];
-		};
-	} foreach _classnames_to_check;
-};
-
 resources_ammo = saved_ammo_res;
 resources_intel = saved_intel_res;
-publicVariable "GRLIB_vehicle_to_military_base_links";
 publicVariable "GRLIB_permissions";
 
 uiSleep 1;
@@ -390,11 +372,33 @@ while { true } do {
 		_stats pushback stats_fobs_lost;
 		_stats pushback stats_readiness_earned;
 
-		greuh_liberation_savegame = [ blufor_sectors, GRLIB_all_fobs, buildings_to_save, time_of_day, round combat_readiness,0,0,0, round resources_ammo, _stats,
-		[ round infantry_weight, round armor_weight, round air_weight ], GRLIB_vehicle_to_military_base_links, GRLIB_permissions, ai_groups, resources_intel, GRLIB_player_scores, unitcap, GRLIB_arsenal_unlocks, (missionNamespace call BIS_fnc_getVirtualMagazineCargo) ];
+        LP_allLocations apply {
+            private _location_properties = _x getVariable LP_location_props_varname;
+            _LP_locations_saved set [(name _x), _location_properties];
+        };
 
-		profileNamespace setVariable [ GRLIB_save_key, greuh_liberation_savegame ];
-		saveProfileNamespace;
+		greuh_liberation_savegame = [
+            blufor_sectors,
+            GRLIB_all_fobs,
+            buildings_to_save,
+            time_of_day,
+            round combat_readiness,
+            0,0,0,
+            round resources_ammo,
+            _stats,
+            [ round infantry_weight, round armor_weight, round air_weight ],
+            GRLIB_vehicle_to_military_base_links,
+            GRLIB_permissions,
+            ai_groups,
+            resources_intel,
+            GRLIB_player_scores,
+            unitcap,
+            GRLIB_arsenal_unlocks,
+            (missionNamespace call BIS_fnc_getVirtualMagazineCargo),
+            _LP_locations_saved
+        ];
 
-	};
+        profileNamespace setVariable [ GRLIB_save_key, greuh_liberation_savegame ];
+        saveProfileNamespace;
+    };
 };

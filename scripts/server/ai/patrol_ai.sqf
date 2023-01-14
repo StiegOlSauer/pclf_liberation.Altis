@@ -1,46 +1,42 @@
-_grp = _this select 0;
-if ( isNil "reinforcements_sector_under_attack" ) then { reinforcements_sector_under_attack = "" };
+params ["_grp"];
+private ["_waypoint", "_patrol_startpos", "_sectors_patrol"];
+
+if ( isNil "reinforcements_sector_under_attack" ) then { reinforcements_sector_under_attack = locationNull };
 
 while { count (units _grp) > 0 } do {
-
 	if ( reinforcements_sector_under_attack != "" ) then {
 
 		while {(count (waypoints _grp)) != 0} do {deleteWaypoint ((waypoints _grp) select 0);};
 		{_x doFollow leader _grp} foreach units _grp;
 
-		_waypoint = _grp addWaypoint [markerpos reinforcements_sector_under_attack, 50];
+		_waypoint = _grp addWaypoint [position reinforcements_sector_under_attack, 50];
 		_waypoint setWaypointType "MOVE";
 		_waypoint setWaypointSpeed "FULL";
 		_waypoint setWaypointBehaviour "AWARE";
 		_waypoint setWaypointCombatMode "GREEN";
 		_waypoint setWaypointCompletionRadius 30;
-		_waypoint = _grp addWaypoint [markerpos reinforcements_sector_under_attack, 50];
+		_waypoint = _grp addWaypoint [position reinforcements_sector_under_attack, 50];
 		_waypoint setWaypointSpeed "LIMITED";
 		_waypoint setWaypointType "SAD";
-		_waypoint = _grp addWaypoint [markerpos reinforcements_sector_under_attack, 50];
+		_waypoint = _grp addWaypoint [position reinforcements_sector_under_attack, 50];
 		_waypoint setWaypointSpeed "LIMITED";
 		_waypoint setWaypointType "SAD";
-		_waypoint = _grp addWaypoint [markerpos reinforcements_sector_under_attack, 50];
+		_waypoint = _grp addWaypoint [position reinforcements_sector_under_attack, 50];
 		_waypoint setWaypointSpeed "LIMITED";
 		_waypoint setWaypointType "CYCLE";
 
 		sleep 300;
 	};
 
-	if ( reinforcements_sector_under_attack == "" ) then {
-		_sectors_patrol = [];
+	if ( name reinforcements_sector_under_attack == "" ) then {
 		_patrol_startpos = getpos (leader _grp);
-		{
-			if ( _patrol_startpos distance (markerpos _x) < 2500) then {
-				_sectors_patrol pushBack _x;
-			};
-		} foreach (sectors_allSectors - blufor_sectors);
+		_sectors_patrol = [_patrol_startpos, GRLIB_side_enemy, "any", 2500] call LP_getLocations;
 
 		while {(count (waypoints _grp)) != 0} do {deleteWaypoint ((waypoints _grp) select 0);};
 		{_x doFollow leader _grp} foreach units _grp;
 
 		{
-			_waypoint = _grp addWaypoint [markerpos _x, 300];
+			_waypoint = _grp addWaypoint [position _x, 300];
 			_waypoint setWaypointType "MOVE";
 			_waypoint setWaypointSpeed "NORMAL";
 			_waypoint setWaypointBehaviour "AWARE";
@@ -55,5 +51,5 @@ while { count (units _grp) > 0 } do {
 		_waypoint setWaypointType "CYCLE";
 	};
 
-	waitUntil { sleep 5;(count (units _grp) == 0) || (reinforcements_sector_under_attack != "") };
+	waitUntil { sleep 5;(count (units _grp) == 0) || (name reinforcements_sector_under_attack != "") };
 };

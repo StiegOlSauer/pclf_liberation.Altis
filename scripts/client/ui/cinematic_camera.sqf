@@ -38,7 +38,7 @@ while { cinematic_camera_started } do {
 				};
 			} else {
 				for [ {_idx=0},{_idx < 5},{_idx=_idx+1} ] do {
-					_positions pushback (getmarkerpos (sectors_allSectors call bis_fnc_selectRandom ));
+					_positions pushback (position (selectRandom (nearestLocations [position locationNull, ["NameCity", "NameVillage", "NameLocal"], 5000])));
 				};
 			};
 
@@ -262,9 +262,9 @@ while { cinematic_camera_started } do {
 						_nearest_sector = "BASE CHIMERA";
 					};
 				} else {
-					_nearest_sector = [300, _position ] call F_getNearestSector;
-					if ( _nearest_sector != "" ) then {
-						_nearest_sector = markertext _nearest_sector;
+					_nearest_sector = (nearestLocations [_position, ["NameCity", "NameVillage", "NameLocal"], 300] select {count (text _x) > 0}) select 0;
+					if ( ! (isNil "_nearest_sector")) then {
+						_nearest_sector = text _nearest_sector;
 					} else {
 						_nearfobs = [ GRLIB_all_fobs, { _x distance _position < 300 } ] call BIS_fnc_conditionalSelect;
 						if ( count _nearfobs > 0 ) then {

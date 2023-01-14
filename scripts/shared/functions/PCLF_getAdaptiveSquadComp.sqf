@@ -25,9 +25,9 @@ if (combat_readiness >= GRLIB_uptier_readiness) then {
     _base_class = GRLIB_opfor_hi_base_soldier_class;
 };
 
-if (count _squad_type == 0 || _squad_type == "regular") then {
+if (_squad_type == "" || _squad_type == "regular") then {
     _tier = _tier get "regular";
-    _squad_comp = selectRandomWeighted (_tier selectRandomWeighted [GRLIB_infantry_weight, GRLIB_armor_weight, GRLIB_air_weight]);
+    _squad_comp = selectRandomWeighted (_tier selectRandomWeighted [LP_infantry_weight, LP_armor_weight, LP_air_weight]);
 } else {
     _squad_comp = _tier get _squad_type;
 };

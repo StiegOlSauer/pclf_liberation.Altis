@@ -4,11 +4,11 @@ waitUntil { !isNil "blufor_sectors" };
 sleep 5;
 
 attack_in_progress = false;
-
+if (true) exitWith {};
 while { GRLIB_endgame == 0 } do {
 
 	{
-		_ownership = [ markerpos _x ] call F_sectorOwnership;
+		_ownership = [ locationPosition _location ] call F_sectorOwnership;
 		if ( _ownership == GRLIB_side_enemy ) then {
 			[ _x ] call attack_in_progress_sector;
 		};
