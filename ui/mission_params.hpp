@@ -184,7 +184,7 @@ class Params
 		title = $STR_PARAMS_FIRSTFOB;
 		values[] = { 1, 0 };
 		texts[] = { $STR_YES, $STR_NO };
-		default = 0;
+		default = 1;
 	};
 	class Whitelist {
 		title = $STR_WHITELIST_PARAM;
@@ -196,19 +196,19 @@ class Params
 		title = $STR_WIPE_TITLE;
 		values[] = {0,1};
 		texts[] =  {$STR_WIPE_NO,$STR_WIPE_YES};
-		default = 0;
+		default = 1;
 	};
 	class WipeSave2{
 		title = $STR_WIPE_TITLE_2;
 		values[] = {0,1};
 		texts[] = {$STR_WIPE_NO,$STR_WIPE_YES};
-		default = 0;
+		default = 1;
 	};
 	class DisableRemoteSensors{
 		title = "Disable Remote Sensors (experimental!)";
 		values[] = {0,1,2};
 		texts[] = {"No","Disable for clients without local AIs","Disable for all clients"};
-		default = 0;
+		default = 2;
 	};
 	class Spacer3 {
 		title = "";

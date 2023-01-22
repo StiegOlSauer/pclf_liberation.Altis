@@ -29,18 +29,18 @@ _isSpecops = {
  * Spawning order:
  * 0. Follow unitcap limitations, but apply them to sector
  * 1. Place one roaming squad.
- * 2. Try to place Military Post squads (if any), static weapons squads, compositions' placesholders.
- * 3. Place alert_level% (at least 25%) of the rest of the garrison to buildings. I.e. for 100%, all remaining squads will garrison the buildings
+ * 2. Try to place Military Post squads (if any), static weapons squads, compositions' placeholders.
+ * 3. Place alert_level% (at least 25%) of remaining garrison to buildings. I.e. for 100%, all remaining squads will garrison the buildings
  * 4. Spawn patrols - less alert level - more patrols.
  * 5. Create roaming/building (1/1) squads for the rest of the garrison.
  *
  * After all spawned forces are eliminated and location shall fall into BLUFOR hands:
  * 1. Check what remained of a garrison:
  * 1.1. 10% or less of Unitcap: location becomes BLUFOR remaining OPFOR assimilates,
- *      after some time depending on "civilian reception" mutiny is started. If reception is poor,
+ *      after some time depending on "civilian resistance (reception?)" mutiny is started. If reception is poor,
  *      OPFOR garrison reinforced by locals at some degree. On highest level of "reception", locals do not allow mutiny to start.
  *
- * 1.2. 11 to 33% of Unitcap: location is BLUFOR. Garrison flees to the nearest location that has capacity.
+ * 1.2. 11 to 33% of Unitcap: location is BLUFOR. Garrison flees to the nearest location with highest available capacity.
  *      In case of location's over-capacity, it immediately attacks nearest BLUFOR location
  * 1.3. 34 to 50% of Unitcap: location is BLUFOR. Garrison regroups and immediately counter-attacks this location
  * 1.4. 51+% of Unitcap: location is OPFOR. Garrison keeps spawning near the location and at unoccupied houses, battle continues
@@ -60,7 +60,7 @@ _garrisonMaxOverride = [_location, "garrison_override"] call LP_getLocationPrope
 };
 _buildingPositionsCount = _garrisonMaxActual;
 _garrisonMaxActual = [_garrisonMaxActual, _garrisonMaxOverride] select (_garrisonMaxOverride > _garrisonMaxActual);
-if (_garrisonMaxActual < _garrisonMax) then {
+if (_garrisonMaxActual < _garrisonMax) then { // "kill" 50% of a garrison which occupied destroyed buildings
     _garrison = _garrison - floor((_garrisonMax - _garrisonMaxActual) * 0.5);
     [_location, "garrison_max", _garrisonMaxActual] call LP_setLocationProperty;
     [_location, "garrison", _garrison] call LP_setLocationProperty;
@@ -207,51 +207,9 @@ if ( _spawncivs && GRLIB_civilian_activity > 0) then {
      _managed_civs append _civs;
 };
 
+[_location, _locationGroups, _managed_vehicles, _managed_civs] call LP_storeLocationSpawnedEntities;
 [([_location] call LP_getLocationMarker), (_locationSize / 3), _iedcount] spawn ied_manager;
 sleep 3;
 
-[_locationGroups, _location] spawn compileFinal preprocessFileLineNumbers "scripts\server\statemachines\active_location.sqf";
-private _resolverHandle = [_location, _locationGroups, _loadoutHash] spawn garrison_resolver;
-
-private _tickValue = 30;
-private _tickMax = 300;
-private _despawn_timeout = 30;
-while {true} do {
-    sleep _tickValue;
-    if (([locationPosition _location, _locationSize / 3] call F_sectorOwnership) == GRLIB_side_friendly) exitWith {
-        ["LP_locationCapturedBLUFOR", [_location]] call CBA_fnc_serverEvent;
-//         private _garrisonRemains = 0;
-//         _locationGroups apply {
-//             _garrisonRemains = _garrisonRemains + ({alive _x} count (units _x));
-//         };
-//         private _garrNotSpawned = [_location, "garrison"] call LP_getLocationProperty;
-//         [_location, "garrison", _garrNotSpawned + _garrisonRemains] call LP_setLocationProperty;
-
-        ((locationPosition _location) nearEntities [ ["Man"], _locationSize]) apply {[_x] spawn prisonner_ai};
-        sleep (_tickValue * 20);
-        _managed_vehicles apply {[_x] call F_cleanOpforVehicle};
-
-        waitUntil {sleep (_tickValue * 2); (allPlayers inAreaArray _location) isEqualTo []};
-        _managed_civs apply {deleteVehicle _x};
-    };
-
-    _bluforCount = [locationPosition _location, _locationSize, GRLIB_side_friendly] call F_getUnitsCount;
-    _despawn_timeout = _despawn_timeout - _tickValue + ceil (_bluforCount * _tickValue * 1.3);
-    if (_despawn_timeout < 0 && _bluforCount == 0) exitWith {
-//         private _garrisonRemains = 0;
-        _locationGroups apply {
-//             _garrisonRemains = _garrisonRemains + ({alive _x} count (units _x));
-            (units _x) apply {deleteVehicle _x};
-        };
-//         private _garrNotSpawned = [_location, "garrison"] call LP_getLocationProperty;
-//         [_location, "garrison", _garrNotSpawned + _garrisonRemains] call LP_setLocationProperty;
-
-        private _remainingVehs = [];
-        (_managed_vehicles select {alive _x}) apply {_remainingVehs pushBack (typeOf _x)};
-        [_location, "vehicles", _remainingVehs] call LP_setLocationProperty;
-        _managed_vehicles apply {[_x] call F_cleanOpforVehicle};
-        _managed_civs apply {deleteVehicle _x};
-        ["LP_locationBLUFORDefeated", [_location]] call CBA_fnc_serverEvent;
-    };
-    _despawn_timeout = [_despawn_timeout, _tickMax] select (_despawn_timeout > _tickMax);
-};
+[_locationGroups, _location] spawn active_location_statemachine;
+[_location, _locationGroups, _loadoutHash] spawn garrison_resolver;

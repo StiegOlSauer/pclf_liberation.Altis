@@ -4,8 +4,8 @@ private [
 
 _longRangeInf = 1000;
 _longRangeVeh = 1000;
-_normalInf = 700;
-_normalVeh = 700;
+_normalInf = 650;
+_normalVeh = 650;
 _closeInf = 300;
 _closeVeh = 250;
 

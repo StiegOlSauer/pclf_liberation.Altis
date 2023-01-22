@@ -26,11 +26,11 @@ if (_rooftops isNotEqualTo []) then {
         ((position _x) nearObjects [_staticPlaceholder, 100]) apply {
             private _staticPos = getPosATL _x;
             deleteVehicle _x;
-            createVehicle [_weapon, _staticPos, [], 0, "CAN_COLLIDE"];
-            _x setPosATL _staticPos;
-            _x setVectorUp [0, 0, 1];
+            private _s = createVehicle [_weapon, _staticPos, [], 0, "CAN_COLLIDE"];
+            _s setPosATL _staticPos;
+            _s setVectorUp [0.001, 0.001, 1];
             _military_defenders_posts = _military_defenders_posts + 1;
-            sleep 0.5;
+            sleep 0.1;
         };
     };
 };
@@ -66,6 +66,7 @@ for "_i" from 1 to (_military_defenders_posts) do {
 };
 
 _groups apply {
+	_x setVariable [LP_group_assignment_var, _location];
     (leader _x) setUnitRank "SERGEANT";
     [
         _x, (position _location), _searchRange, 1, false, 0.9, true,

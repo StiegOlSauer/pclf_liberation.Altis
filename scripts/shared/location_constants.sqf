@@ -34,7 +34,9 @@ LP_location_type_icons = createHashMapFromArray [
 ];
 
 LP_location_props_varname = "LP_properties";
-LP_location_spawned_units = "LP_units";
+LP_location_spawned_groups_var = "LP_location_groups";
+LP_location_spawned_vehs_var = "LP_location_vehs";
+LP_location_spawned_civs_var = "LP_location_civs";
 LP_active_markers = [];
 LP_active_locations = [];
 

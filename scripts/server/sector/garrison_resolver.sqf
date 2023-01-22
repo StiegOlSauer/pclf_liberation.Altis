@@ -96,7 +96,7 @@ if (_garrisonRemaining <= ((0.5 * _garrisonMax) min LP_unitcap_location)) exitWi
     };
 };
 
-diag_log format ["EXCESS OF GARRISON IS DETECTRED IN %1. GOING TO CREEEP SPAWN PLAYERS", name _location];
+diag_log format ["EXCESS OF GARRISON IS DETECTED IN %1. GOING TO CREEEP SPAWN PLAYERS", name _location];
 diag_log format ["%1: while {sleep 45; %2 > 0 && (%3)}", name _location, _garrisonRemaining, [_location] call LP_isLocationActive];
 while {sleep 45; _garrisonRemaining > 0 && ([_location] call LP_isLocationActive)} do {
     diag_log format ["CHECKING IF GARRISON IS GOING TO FLEE %1: %2", name _location, _garrisonRemaining];

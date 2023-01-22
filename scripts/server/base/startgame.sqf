@@ -1,6 +1,7 @@
 waitUntil { time > 1 };
 waitUntil { !isNil "GRLIB_all_fobs" };
 waitUntil { !isNil "save_is_loaded" };
+waitUntil { !isNil "LP_locationsInitialized" };
 
 private _fobbox = ObjNull;
 
@@ -14,6 +15,7 @@ if (count GRLIB_all_fobs == 0 && GRLIB_build_first_fob) then {
     ] call BIS_fnc_randomPos;
     [_pos, true] remoteExec ["build_fob_remote_call", 2];
 };
+// TODO: Add fallback FOB location
 
 while { count GRLIB_all_fobs == 0 } do { // FIXME: replace with eventhandler on FOB BOX
 	if ( GRLIB_isAtlasPresent ) then {

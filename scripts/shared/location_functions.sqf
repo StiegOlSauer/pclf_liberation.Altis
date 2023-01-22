@@ -27,6 +27,16 @@ LP_getLocationMaxSize = {
     (size _loc) #0 max (size _loc) #1
 };
 
+/*
+	23:51:27 Error in expression <_properties get ["composition", 0];
+if (_c isEqualType "") exitWith {
+_c = [_c] >
+23:51:27   Error position: <_c isEqualType "") exitWith {
+_c = [_c] >
+23:51:27   Error Undefined variable in expression: _c
+23:51:27 File mpmissions\__cur_mp.Altis\scripts\shared\location_functions.sqf..., line 37
+*/
+
 LP_getLocationComposition = {
     params ["_loc"];
 
@@ -108,13 +118,25 @@ LP_getNearestLocation = {
     ([_pos, _side, _type, _distance] call LP_getLocations) # 0
 };
 
+
+/*
+23:39:09 Error in expression <c", "_propName"];
+private _properties = _loc getVariable LP_location_props_varna>
+23:39:09   Error position: <_loc getVariable LP_location_props_varna>
+23:39:09   Error Undefined variable in expression: _loc
+*/
+
+
 LP_getLocationProperty = {
-    params ["_loc", "_propName"];
+	params ["_loc", "_propName", ["_default", nil]];
     private _properties = _loc getVariable LP_location_props_varname;
     if (! isNil "_properties") exitWith {
-        _properties get _propName;
+			if (! isNil "_default") exitWith {
+				_properties getOrDefault [_propName, _default];
+			};
+      _properties getOrDefault [_propName];
     };
-    nil
+    _nil
 };
 
 LP_setLocationProperty = {
@@ -125,6 +147,22 @@ LP_setLocationProperty = {
         _loc setVariable [LP_location_props_varname, _properties];
     };
     nil
+};
+
+LP_storeLocationSpawnedEntities = {
+	params ["_loc", "_groups", "_vehs", "_civs"];
+	_loc setVariable [LP_location_spawned_groups_var, _groups];
+	_loc setVariable [LP_location_spawned_vehs_var, _vehs];
+	_loc setVariable [LP_location_spawned_civs_var, _civs];
+};
+
+LP_getLocationSpawnedEntities = {
+	params ["_loc"];
+	private _g = _loc getVariable LP_location_spawned_groups_var;
+	private _v = _loc getVariable LP_location_spawned_vehs_var;
+	private _c = _loc getVariable LP_location_spawned_civs_var;
+
+	[_g, _v, _c]
 };
 
 LP_getLocationTraits = {
@@ -144,4 +182,36 @@ LP_decreaseLocationGarrison = {
 
     private _currentGarrison = [_loc, "garrison"] call LP_getLocationProperty;
     [_loc, "garrison", (_currentGarrison - _amount)] call LP_setLocationProperty;
+};
+
+LP_setLocationTimer = {
+	params ["_loc", "_timerName", ["_duration", 30], ["_adaptiveCoef", 0]];
+
+	private _timerCount = [_loc, "timer_"+_timerName+"_count", 0] call LP_getLocationProperty;
+	private _timerDone = servertime + _duration + _timerCount * _adaptiveCoef;
+	[_loc, "timer_"+_timerName, _timerDone] call LP_setLocationProperty;
+	[_loc, "timer_"+_timerName+"_count", _timerCount+1] call LP_setLocationProperty;
+};
+
+LP_setLocationGreaterTimer = {
+	params ["_loc", "_timerName", ["_duration", 30], ["_adaptiveCoef", 0], ["_max", 300]];
+	private _timer = [_loc, "timer_"+_timerName, 0] call LP_getLocationProperty;
+	private _timerCount = [_loc, "timer_"+_timerName+"_count", 0] call LP_getLocationProperty;
+	private _effDuration = _duration + _timerCount * _adaptiveCoef;
+	_effDuration = [_effDuration, _max] select (_effDuration > _max);
+	if (_timer < (servertime + _effDuration)) exitWith {
+			[_loc, _timerName, _duration, _adaptiveCoef] call LP_setLocationTimer;
+	};
+};
+
+LP_isTimerExpired = {
+	params ["_loc", "_timerName"];
+	private _timer = [_loc, "timer_"+_timerName, 0] call LP_getLocationProperty;
+	servertime >= _timer
+};
+
+LP_resetTimer = {
+	params ["_loc", "_timerName"];
+	[_loc, "timer_"+_timerName, 0] call LP_setLocationProperty;
+	[_loc, "timer_"+_timerName+"_count", 0] call LP_setLocationProperty;
 };

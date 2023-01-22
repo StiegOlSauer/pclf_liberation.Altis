@@ -15,7 +15,7 @@ _grp = createGroup GRLIB_side_enemy;
 private _groups = [_grp];
 
 for "_i" from 1 to _building_defenders_count do {
-    if (_i % 4 == 0) then {
+		if (_i % 4 == 0) then {
         _grp = createGroup GRLIB_side_enemy;
         _groups pushback _grp;
     };

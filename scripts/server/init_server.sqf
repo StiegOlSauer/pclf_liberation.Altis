@@ -71,10 +71,13 @@ attack_in_progress_sector = compileFinal preprocessFileLineNumbers "scripts\serv
 destroy_fob = compileFinal preprocessFileLineNumbers "scripts\server\sector\destroy_fob.sqf";
 ied_manager = compileFinal preprocessFileLineNumbers "scripts\server\sector\ied_manager.sqf";
 manage_ammoboxes = compileFinal preprocessFileLineNumbers "scripts\server\sector\manage_ammoboxes.sqf";
-manage_one_sector = compileFinal preprocessFileLineNumbers "scripts\server\sector\manage_one_sector.sqf";
-wait_to_spawn_sector = compileFinal preprocessFileLineNumbers "scripts\server\sector\wait_to_spawn_sector.sqf";
+// wait_to_spawn_sector = compileFinal preprocessFileLineNumbers "scripts\server\sector\wait_to_spawn_sector.sqf";
 activate_location = compileFinal preprocessFileLineNumbers "scripts\server\sector\activate_location.sqf";
 garrison_resolver = compileFinal preprocessFileLineNumbers "scripts\server\sector\garrison_resolver.sqf";
+
+// Statemachines
+locations_statemachine = compileScript ["scripts\server\statemachines\locations.sqf", true];
+active_location_statemachine = compileScript ["scripts\server\statemachines\active_location.sqf", true];
 
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\base\startgame.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\base\huron_manager.sqf";
@@ -86,7 +89,6 @@ garrison_resolver = compileFinal preprocessFileLineNumbers "scripts\server\secto
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\capture_vehicles.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\clean.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\cleanup_vehicles.sqf";
-// [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\fucking_set_fog.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\manage_time.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\manage_weather.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\server\game\periodic_save.sqf";

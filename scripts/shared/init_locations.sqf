@@ -194,5 +194,5 @@ _initialized_locations = [];
     _initialized_locations pushBack _location;
 };
 LP_allLocations = _initialized_locations;
-
-[] spawn compileFinal preprocessFileLineNumbers "scripts\server\statemachines\locations.sqf";
+LP_locationsInitialized = true;
+[] spawn locations_statemachine;

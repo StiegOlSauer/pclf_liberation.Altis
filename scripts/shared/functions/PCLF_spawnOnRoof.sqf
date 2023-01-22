@@ -3,7 +3,7 @@ private ["_comp"];
 
 _bmtw = {_building modelToWorld _this};
 _offsets = createHashMapFromArray [
-    ["Land_Cargo_House_V1_F", [0, 2, 0]]
+    ["Land_Cargo_House_V1_F", [0, 2, 1]]
 ];
 
 (0 boundingBoxReal _building) params ["_pos1", "_pos2"];
@@ -33,7 +33,7 @@ _comp = [_compPath] call LP_getCompositionByPath;
     private _p = getPosATL _x;
 //     _x setVehiclePosition [ [_p select 0, _p select 1, _wz2], [], 0, "CAN_COLLIDE"];
     _x setPos [_p select 0, _p select 1, _wz2];
-    _x setVectorUp [0, 0, 1];
+    _x setVectorUp [0.001, 0.001, 1];
     diag_log format ["%1 POSITIONED TO: %2", _x, [_p select 0, _p select 1, _wz2]];
 };
 

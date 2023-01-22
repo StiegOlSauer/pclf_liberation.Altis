@@ -37,6 +37,7 @@ if ( GRLIB_deployment_cinematic ) then {
 
 };
 
+//FIXME: Error Undefined variable in expression: _nearest_sector
 [ format [ "<t size='0.7' align='left'>%1<br/>%2<br/>%3<br/>%4</t>", name player, _spawn_str, _datestring, text _nearest_sector ],1,0.8,8,1 ] spawn BIS_fnc_dynamictext;
 
 if ( GRLIB_deployment_cinematic ) then {
